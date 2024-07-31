@@ -1,0 +1,127 @@
+{% extends "base/manger.html" %}
+{% load static %}
+{%block body%}
+<div class="row mb-5 mt-5 ">
+  <div class="col d-flex justify-content-center  align-items-center">
+      <form class="mt-3" action="{% url 'Manger:search' %}" method="GET">
+          {% csrf_token%}
+          <input type="hidden" name="type_search" value="Category">
+          <div class="input-group gap-3">
+              <input type="text" class="form-control" name='search' placeholder="Search For product...">
+              <div class="input-group-append">
+                  <button class="btn btn-primary" type="submit">Search</button>
+              </div>
+          </div>
+      </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col d-flex justify-content-between mb-5">
+    <h1 class='text-white'>Category</h1>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalC">
+      create Category
+    </button>
+    
+    
+    <div class="modal fade" id="exampleModalC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Category update</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form action="{% url 'Category:add_category'%}" class="d-flex flex-column gap-3" method="post" enctype="multipart/form-data">
+                  {% csrf_token%}
+                  <input type="text" placeholder="Plant name" name="name_category"  class="form-control" required/>
+                  <textarea name="description" placeholder="About the plant" class="form-control" required></textarea>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <input type="submit" class="btn btn-primary" value="Save changes">
+                    </div>
+              </form>
+          </div>
+       
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  {% for category in categorys %}
+  <div class="col-md-4 mb-4">
+      <div class="card">
+          <div class="card-body text-center">
+              <a href="#" class="text-white text-decoration-none link-category">
+                  <h5 class="card-title">{{ category.name_Category }}</h5>
+              </a>
+              <div class="d-flex justify-content-between mt-3">
+                  <!-- Edit Button -->
+                  <button type="button" class="btn btn-primary rounded d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#exampleModal1-{{ category.id }}">
+                      <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  
+                  <!-- Delete Button -->
+                  <button type="button" class="btn btn-danger rounded d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#exampleModal2-{{ category.id }}">
+                      <span class="material-symbols-outlined">delete</span>
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Edit Modal -->
+  <div class="modal fade" id="exampleModal1-{{ category.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Update Category</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form action="{% url 'Category:update_category' category.id %}" method="post">
+                      {% csrf_token %}
+                      <div class="mb-3">
+                          <label for="name_Category" class="form-label">Category Name</label>
+                          <input type="text" id="name_Category" name="name_Category" value="{{ category.name_Category }}" class="form-control" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="description_Category" class="form-label">Description</label>
+                          <textarea id="description_Category" name="description_Category" class="form-control" required>{{ category.description_Category }}</textarea>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <input type="submit" class="btn btn-primary" value="Save changes">
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Delete Modal -->
+  <div class="modal fade" id="exampleModal2-{{ category.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form action="{% url 'Category:delete_category' category.id %}" method="post">
+                      {% csrf_token %}
+                      <p>Are you sure you want to delete this category?</p>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <input type="submit" class="btn btn-danger" value="Delete">
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  {% endfor %}
+</div>
+{%endblock%}

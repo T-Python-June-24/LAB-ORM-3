@@ -1,0 +1,254 @@
+{% extends "base/manger.html" %}
+{% load static %}
+{%block body%}
+<div class="row mb-5 mt-5">
+    <div class="col d-flex justify-content-center align-items-center">
+        <form class="mt-3" action="{% url 'Manger:search_manger' %}" method="get">
+            {% csrf_token %}
+            <div class="input-group gap-3">
+                
+                <select class="form-select" name="search_by" aria-label="Select search type">
+                    <option value="product" {% if request.GET.search_by == 'product_name' %}selected{% endif %}>Product Name</option>
+                    <option value="Supplier" {% if request.GET.search_by == 'supplier_name' %}selected{% endif %}>Supplier Name</option>
+                    <option value="Category" {% if request.GET.search_by == 'category_name' %}selected{% endif %}>Category Name</option>
+                </select>
+                
+                
+                <input type="text" class="form-control" name="search_term" placeholder="Search..." value="{{ request.GET.search_term }}">
+                
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+  <div class="col d-flex justify-content-between mb-5">
+    <h1 class="text-white">Product</h1>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      create product
+    </button>
+    
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'product:Add_product' %}" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Plant Name</label>
+                            <input type="text" id="Name" name="Name" value="{{ product.Name_Product }}" class="form-control" placeholder="Plant name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" name="description" class="form-control" placeholder="About the plant" required>{{ product.Description_product }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select id="category" name="category" class="form-select" required>
+                                <option value="">Choose a category</option>
+                                {% for views_category in category %}
+                                <option value="{{ views_category.id }}" {% if product.Category_product.name_Category == views_category.name_Category %} selected{% endif %}>{{ views_category.name_Category }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="supplier" class="form-label">Suppliers</label>
+                            <select id="supplier" name="supplier" class="form-select" multiple required>
+                                {% for supplier in views_supplier %}
+                                <option value="{{ supplier.id }}" {% if supplier in product.Supplier_product.all %} selected{% endif %}>{{ supplier.name_Supplier }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Status" class="form-label">Status</label>
+                            <select id="Status" name="Status" class="form-select" required>
+                                <option value="">Status</option>
+                                <option value="True" {% if product.Status_Product == 1 %} selected{% endif %}>Yes</option>
+                                <option value="False" {% if product.Status_Product == 0 %} selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Quantity</span>
+                                <input type="number" id="quantity" name="quantity" value="{{ product.Quantity_Product }}" class="form-control" aria-describedby="basic-addon3" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" id="price" name="price" value="{{ product.Price_Product }}" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                                <span class="input-group-text">.00</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expiration" class="form-label">Expiration Date</label>
+                            <input type="date" id="expiration" name="expiration" value="{{ product.Expiration_date|date:'Y-m-d' }}" class="form-control"  />
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Product Image</label>
+                            <input type="file" id="image" name="image" accept="image/*" class="form-control" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Add Product">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  </div>
+</div>
+<hr style="border-color: #3c4a67;"/>
+<div class="row">
+   <!-- Loop through products -->
+{% for product in views_product %}
+<div class="col-md-4 mb-4">
+    <div class="card position-relative">
+        <!-- Check for out of stock -->
+        <img src="{{ product.Images_Product.url }}" class="card-img-top {% if product.Quantity_Product == 0 %} img-out{% endif %}" alt="{{ product.Name_Product }}">
+        
+        {% if product.Quantity_Product == 0 %}
+        <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded">
+            Sold Out
+        </div>
+        {% endif %}
+        
+        <div class="card-body">
+            <h5 class="card-title">{{ product.Name_Product }}</h5>
+            <p class="card-text">{{ product.Description_product }}</p>
+            <p class="card-text">Price: ${{ product.Price_Product }}</p>
+            <p class="card-text">Category: {{ product.Category_product.name_Category }}</p>
+            <p class="card-text">Supplier(s):
+                <ul class="list-unstyled">
+                    {% for supplier in product.Supplier_product.all %}
+                    <li>{{ supplier.name_Supplier }}</li>
+                    {% empty %}
+                    <li>No supplier assigned</li>
+                    {% endfor %}
+                </ul>
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1-{{ product.id }}">
+                    Product Update
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal2-{{ product.id }}">
+                    Product Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Modal -->
+    <div class="modal fade" id="exampleModal1-{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Product Update</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'product:update_product' product.id %}" class="d-flex flex-column gap-3" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="Name-{{ product.id }}" class="form-label">Product Name</label>
+                            <input type="text" id="Name-{{ product.id }}" name="Name" value="{{ product.Name_Product }}" class="form-control" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description-{{ product.id }}" class="form-label">Description</label>
+                            <textarea id="description-{{ product.id }}" name="description" class="form-control" required>{{ product.Description_product }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category-{{ product.id }}" class="form-label">Category</label>
+                            <select id="category-{{ product.id }}" name="category" class="form-select" required>
+                                <option value="">Choose a category</option>
+                                {% for views_category in category %}
+                                <option value="{{ views_category.id }}" {% if product.Category_product.id == views_category.id %} selected{% endif %}>{{ views_category.name_Category }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="supplier-{{ product.id }}" class="form-label">Suppliers</label>
+                            <select id="supplier-{{ product.id }}" name="supplier" class="form-select" multiple required>
+                                {% for supplier in views_supplier %}
+                                <option value="{{ supplier.id }}" {% if supplier in product.Supplier_product.all %} selected{% endif %}>{{ supplier.name_Supplier }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Status-{{ product.id }}" class="form-label">Status</label>
+                            <select id="Status-{{ product.id }}" name="Status" class="form-select" required>
+                                <option value="">Status</option>
+                                <option value="True" {% if product.Status_Product == 1 %} selected{% endif %}>Yes</option>
+                                <option value="False" {% if product.Status_Product == 0 %} selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity-{{ product.id }}" class="form-label">Quantity</label>
+                            <input type="number" id="quantity-{{ product.id }}" name="quantity" value="{{ product.Quantity_Product }}" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="price-{{ product.id }}" class="form-label">Price</label>
+                            <input type="text" id="price-{{ product.id }}" name="price" value="{{ product.Price_Product }}" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expiration-{{ product.id }}" class="form-label">Expiration Date</label>
+                            <input type="date" id="expiration-{{ product.id }}" name="expiration" value="{{ product.Expiration_date|date:'Y-m-d' }}" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="image-{{ product.id }}" class="form-label">Image</label>
+                            <input type="file" id="image-{{ product.id }}" name="image" accept="image/*" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <img src="{{ product.Images_Product.url }}" alt="" class="img-fluid mt-2">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Save changes">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="exampleModal2-{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Product Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'product:delete_product' product.id %}" method="post">
+                        {% csrf_token %}
+                        <p>Are you sure you want to delete this product?</p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-danger" value="Delete">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+  
+</div>
+{%endblock%}

@@ -1,0 +1,315 @@
+{% extends "base/manger.html" %}
+
+{%block body%}
+
+<div class="row mb-5 mt-5">
+    <div class="col d-flex justify-content-center align-items-center">
+        <form class="mt-3" action="{% url 'Manger:search_manger' %}" method="get">
+            {% csrf_token %}
+            <div class="input-group gap-3">
+                
+                <select class="form-select" name="search_by" aria-label="Select search type">
+                    <option value="product" {% if request.GET.search_by == 'product_name' %}selected{% endif %}>Product Name</option>
+                    <option value="Supplier" {% if request.GET.search_by == 'supplier_name' %}selected{% endif %}>Supplier Name</option>
+                    <option value="Category" {% if request.GET.search_by == 'category_name' %}selected{% endif %}>Category Name</option>
+                </select>
+                
+                
+                <input type="text" class="form-control" name="search_term" placeholder="Search..." value="{{ request.GET.search_term }}">
+                
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="ccontent">
+    <div class="row">
+        <div class=" dash col-xs-12 col-md-6">
+            <div class="stats main-stats">
+                <div class="stats-title">
+                    <h6>Inventory Summary</h6>
+                </div>
+
+                <div class="stats-body">
+                    <div class="stats-item active">
+                        <div class="stats-icon stats-visitors"><span class="material-symbols-outlined">
+                                inventory_2
+                            </span></div>
+                        <div class="stats-text media-left">
+                            <div class="stats-number">{{number_product}}</div>
+                            <div class="stats-subtext text-white text-size-small">Product</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-item">
+                        <div class="stats-icon stats-orders"><span class="material-symbols-outlined">
+                                category
+                            </span></div>
+                        <div class="stats-text media-left">
+                            <div class="stats-number"> {{number_category}} </div>
+                            <div class="stats-subtext text-white text-size-small">Category</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-item Supplier">
+                        <div class="stats-icon stats-sales"><span class="material-symbols-outlined">
+                                account_box
+                            </span></div>
+                        <div class="stats-text media-left">
+                            <div class="stats-number"> {{number_supplier}} </div>
+                            <div class="stats-subtext text-white text-size-small">Supplier</div>
+                        </div>
+                    </div>
+                    <div class="stats-item Supplier">
+                        <div class="stats-icon stats-sales"><span class="material-symbols-outlined">
+                            attach_money
+                            </span></div>
+                        <div class="stats-text media-left">
+                            <div class="stats-number"> {{num_prosuct}} $ </div>
+                            <div class="stats-subtext text-white text-size-small">Total product prices</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="views_product">
+                <div class="panel panel-warning">
+                    <div class="panel-heading" style="background-color: #00b4d8;">Latest products</div>
+                    <div class="panel-body">
+                        <div class="header-product text-white">
+                            <p>images</p>
+                            <p>name</p>
+                            <p>Quantity</p>
+                        </div>
+                        {% for product in update_product %}
+                        <div class="product" id="product-{{product.id}}" data-bs-toggle="modal"
+                            data-bs-target="#modal-{{product.id}}">
+                            <img src="{{product.Images_Product.url}}" alt="">
+                            <h1>{{product.Name_Product}}</h1>
+                            <p>{{product.Quantity_Product}}</p>
+                        </div>
+
+
+                        <div class="modal fade" id="modal-{{product.id}}" tabindex="-1"
+                            aria-labelledby="modalLabel-{{product.id}}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalLabel-{{product.id}}"> product:
+                                            {{product.Name_Product}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="model-img mb-3">
+                                            <img src="{{product.Images_Product.url}}" alt="" class="img-fluid">
+                                        </div>
+                                        <h1>{{product.Name_Product}}</h1>
+                                        <p>SR {{product.Price_Product}}</p>
+                                        <p>{{product.Description_product}}</p>
+                                        <p> Category :{{product.Category_product.name_Category}}</p>
+                                        <p>Supplier:</p>
+                                        <div class="supplier">
+                                            {% for supplier in product.Supplier_product.all %}
+                                            <p>{{supplier.name_Supplier}}</p>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12 col-lg-5">
+            <div class="progress-div">
+
+                <label for="" class="text-white">Products sold out</label>
+                <div class="progress mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: {{sold}}%" aria-valuenow="{{sold}}" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+
+                <label for="" class="text-white">Products are running out</label>
+                <div class="progress mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: {{running}}%" aria-valuenow="{{running}}" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+
+            </div>
+            <div class="panel panel-warning mt-5">
+                <div class="panel-heading">Products are running out </div>
+                <div class="panel-body">
+                    {% for product in Quantity_product %}
+                    <div class="product" id="product-{{product.id}}" data-bs-toggle="modal"
+                        data-bs-target="#modal-{{product.id}}">
+                        <img src="{{product.Images_Product.url}}" alt="">
+                        <h1>{{product.Name_Product}}</h1>
+                        <p>{{product.Quantity_Product}}</p>
+                    </div>
+                    <div class="modal fade" id="modal-{{product.id}}" tabindex="-1"
+                        aria-labelledby="modalLabel-{{product.id}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel-{{product.id}}"> product:
+                                        {{product.Name_Product}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="model-img mb-3">
+                                        <img src="{{product.Images_Product.url}}" alt="" class="img-fluid">
+                                    </div>
+                                    <h1>{{product.Name_Product}}</h1>
+                                    <p>SR {{product.Price_Product}}</p>
+                                    <p>{{product.Description_product}}</p>
+                                    <p> Category :{{product.Category_product.name_Category}}</p>
+                                    <p>Supplier:</p>
+                                    <div class="supplier">
+                                        {% for supplier in product.Supplier_product.all %}
+                                        <p>{{supplier.name_Supplier}}</p>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="panel panel-warning mt-5">
+                <div class="panel-heading" style="background-color: #ff4747;">Products are out of stock</div>
+                <div class="panel-body">
+                    {% for product in out_product %}
+                    <div class="product" id="product-{{product.id}}" data-bs-toggle="modal"
+                        data-bs-target="#modal-{{product.id}}">
+                        <img src="{{product.Images_Product.url}}" alt="">
+                        <h1 style="color:red">{{product.Name_Product}}</h1>
+                        <p>{{product.Quantity_Product}}</p>
+                    </div>
+                    <!-- Modal -->
+<div class="modal fade" id="modal-{{ product.id }}" tabindex="-1" aria-labelledby="modalLabel-{{ product.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel-{{ product.id }}">Product: {{ product.Name_Product }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 text-center">
+                    <img src="{{ product.Images_Product.url }}" alt="{{ product.Name_Product }}" class="img-fluid rounded">
+                </div>
+                <h4 class="mb-2">{{ product.Name_Product }}</h4>
+                <p class="fs-5 text-muted">SR {{ product.Price_Product }}</p>
+                <p>{{ product.Description_product }}</p>
+                <p class="fw-bold">Category: {{ product.Category_product.name_Category }}</p>
+                <p class="fw-bold">Supplier(s):</p>
+                <ul class="list-unstyled">
+                    {% for supplier in product.Supplier_product.all %}
+                    <li>{{ supplier.name_Supplier }}</li>
+                    {% empty %}
+                    <li>No supplier assigned</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 h-50 mt-5">
+            <a href="{% url 'ReportsProduct:generate_report' %}" class="link-input">
+                <div class="download p-5 d-flex justify-content-center align-items-center flex-column"
+                    style="background-color: #cbff00a3;">
+                    <span class="material-symbols-outlined">download</span>
+                    <p>Download Report</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-md-6 h-50 mt-5">
+            <form id="uploadForm" action="{% url 'ReportsProduct:upload_csv' %}" method="post"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload pt-4 pb-4 pb-1 d-flex justify-content-center align-items-center flex-column box-tre"
+                    style="background-color: #00b4d8; cursor: pointer;">
+                    <input type="file" name="file" id="fileInput" style="display: none;" />
+                    <label for="fileInput" class="d-flex flex-column align-items-center">
+                        <span class="material-symbols-outlined">upload</span>
+                        <p id="fileName">Choose a file</p>
+                        <button type="submit" class="btn" id="submitBtn" disabled>Upload</button>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 col-md-6 h-50 mt-1">
+            <a href="{% url 'ReportsProduct:download_sample' %}" class="link-input">
+                <div class="download p-5 d-flex justify-content-center align-items-center flex-column box-tre"
+                    style="background-color: #7a00ff;">
+                    <span class="material-symbols-outlined">download</span>
+                    <p>Download sample products</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-md-6 h-50 mt-1">
+            <a href="{% url 'ReportsProduct:download_suppliers_report' %}" class="link-input">
+                <div class="download p-5 d-flex justify-content-center align-items-center flex-column box-tre"
+                    style="background-color: #007bff;">
+                    <span class="material-symbols-outlined">download</span>
+                    <p>Download the supplier form</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('fileInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const fileName = document.getElementById('fileName');
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                // Update the label text to show the selected file name
+                fileName.textContent = fileInput.files[0].name;
+                submitBtn.disabled = false;  // Enable the submit button
+            } else {
+                fileName.textContent = 'Choose a file';
+                submitBtn.disabled = true;   // Disable the submit button
+            }
+        });
+    });
+</script>
+
+{%endblock%}
