@@ -19,3 +19,5 @@ def add_email(request:HttpResponse):
     else:
         form = EmailForm()
     return render(request, 'Notifications/add_email.html', {'form': form})
+
+

@@ -2,42 +2,43 @@
 {% load static %}
 {% block title %} Suppliers {% endblock title %}
 {% block content %}
-    <script>
-        AOS.init();
-    </script>
-    <div class="content-home-padding pr-16">
-        
-        <h1 class="bold-font-prop tilt-in-fwd-bl text-blue-800 mb-16">Supplier List</h1>
-        <div class="mb-4 mr-4 flex justify-center">
-            <form action="{% url 'Suppliers:search' %}" method="GET" class="mb-16 mr-4 flex justify-center">
-            <input type="text" minlength="1" maxlength="512" required name="query" placeholder="Search by name, category, or supplier" value="{{ query }}"  class="mr-8 border p-2 rounded w-[800px] place-content-center justify-center">
-            <button type="submit" class="hidden lg:inline-block py-2 px-8 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-xl transition duration-200">Search</button>
+<script>
+    AOS.init();
+</script>
+<div class="content-home-padding pr-4 md:pr-8 lg:pr-16">
+
+    <h1 class="bold-font-prop tilt-in-fwd-bl text-blue-800 mb-8 lg:mb-16">Supplier List</h1>
+    <div class="mb-4 flex justify-center flex-wrap md:flex-nowrap">
+        <form action="{% url 'Suppliers:search' %}" method="GET" class="mb-4 flex flex-wrap justify-center w-full md:w-auto">
+            <input type="text" minlength="1" maxlength="512" required name="query" placeholder="Search by name, category, or supplier" value="{{ query }}" class="mr-2 mb-2 md:mr-8 border p-2 rounded w-full md:w-[800px] place-content-center justify-center">
+            <button type="submit" class="w-full md:w-auto py-2 px-4 md:px-8 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-xl transition duration-200 mb-2 md:mb-0">Search</button>
             <span class="mx-2"></span>
-            <button type="button" class=" py-2 px-6 bg-orange-600 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200 mb-2 md:mb-0">
-                <a href="{% url 'Suppliers:upload_csv' %}"> Import CSV</a>
-                </button>
-            <button type="button" class="ml-3 hidden lg:inline-block py-2 px-8 bg-blue-800 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"><a href="{% url 'Suppliers:add_supplier' %}">Add Supplier </a></button>
-            </form>
-            <hr>
-        </div>
-
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 m-8">
-            {% for supplier in suppliers %}
-            <div class="relative flex flex-col bg-white shadow-md rounded-xl overflow-hidden transition-transform transform hover:scale-105">
-                <img src="{{ supplier.logo.url }}" alt="Supplier Logo" class="w-full h-48 object-cover rounded-t-xl" />
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold text-blue-800 mb-2">
-                        <a href="{% url 'Suppliers:supplier_detail' supplier.pk %}" class="hover:text-teal-500">{{ supplier.name }}</a>
-                    </h2>
-                    <p class="text-gray-600 text-light mb-2"><strong class="text-light">Contact:</strong> {{ supplier.contact_person_name }}</p>
-                    <p class="text-gray-600 text-light mb-2"><strong class="text-light">Supplied Products:</strong> {{ supplier.get_supplied_products_display }}</p>
-                    <p class="text-gray-600 text-light mb-2"><strong class="text-light">Active:</strong> <span class="{% if supplier.active %}text-green-500{% else %}text-red-500{% endif %}">{{ supplier.active|yesno:"Yes,No" }}</span></p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        
+            <button type="button" class="w-full md:w-auto py-2 px-4 md:px-6 bg-orange-600 hover:bg-orange-700 text-sm text-white font-bold rounded-xl transition duration-200 mb-2 md:mb-0">
+                <a href="{% url 'Suppliers:upload_csv' %}">Import CSV</a>
+            </button>
+            <button type="button" class="w-full md:w-auto ml-0 md:ml-3 py-2 px-4 md:px-8 bg-blue-800 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200">
+                <a href="{% url 'Suppliers:add_supplier' %}">Add Supplier</a>
+            </button>
+        </form>
+        <hr>
     </div>
-    <br><br>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 m-4 lg:m-8">
+        {% for supplier in suppliers %}
+        <div class="relative flex flex-col bg-white shadow-md rounded-xl overflow-hidden transition-transform transform hover:scale-105">
+            <img src="{{ supplier.logo.url }}" alt="Supplier Logo" class="w-full h-32 sm:h-48 object-cover rounded-t-xl" />
+            <div class="p-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-blue-800 mb-2">
+                    <a href="{% url 'Suppliers:supplier_detail' supplier.pk %}" class="hover:text-teal-500">{{ supplier.name }}</a>
+                </h2>
+                <p class="text-gray-600 text-light mb-2"><strong class="text-light">Contact:</strong> {{ supplier.contact_person_name }}</p>
+                <p class="text-gray-600 text-light mb-2"><strong class="text-light">Supplied Products:</strong> {{ supplier.get_supplied_products_display }}</p>
+                <p class="text-gray-600 text-light mb-2"><strong class="text-light">Active:</strong> <span class="{% if supplier.active %}text-green-500{% else %}text-red-500{% endif %}">{{ supplier.active|yesno:"Yes,No" }}</span></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+<br><br>
 {% endblock content %}

@@ -52,6 +52,7 @@ def product_create(request:HttpResponse):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Product added successfully')
             return redirect('Product:thanks')
     else:
         form = ProductForm()
@@ -68,6 +69,7 @@ def product_update(request:HttpResponse, pk):
             form.save()
             send_alerts()
             return redirect('Product:thanks')
+            # messages.success(request, 'Product updated successfully')
         else:
             messages.error(request, 'Form is not valid')
     else:

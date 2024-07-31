@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h2 class="bold-font-prop tilt-in-fwd-bl text-blue-800 mb-8">Update Stock for {{ product.name }}</h2>
-    <form method="post" action="{% url 'Product:update_stock' product.id %}" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+    <h2 class="bold-font-prop tilt-in-fwd-bl text-blue-800 mb-8 text-center lg:text-left">Update Stock for {{ product.name }}</h2>
+    <form method="post" action="{% url 'Product:update_stock' product.id %}" class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 max-w-xl mx-auto">
         {% csrf_token %}
         <div class="mb-4">
             <label class="block text-gray-600 font-medium mb-2">Name</label>
@@ -12,26 +12,24 @@
         <div class="mb-4">
             <label class="block text-gray-600 font-medium mb-2">Supplier</label>
             {% for supplier in product.suppliers.all %}
-            <p class="py-2 px-4 bg-gray-100 rounded ">{{ supplier.name }} </p>
-            {% if not forloop.last %}, {% endif %}
-        {% endfor %}        </div>
+            <p class="py-2 px-4 bg-gray-100 rounded">{{ supplier.name }}</p>
+            {% if not forloop.last %}<br>{% endif %}
+            {% endfor %}
+        </div>
         <div class="mb-4">
             <label class="block text-gray-600 font-medium mb-2">Category</label>
             <p class="py-2 px-4 bg-gray-100 rounded">{{ product.category }}</p>
         </div>
-
         <div class="mb-4">
             <label class="block text-gray-600 font-medium mb-2">Stock Quantity</label>
             <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}" class="border rounded-md p-2 w-full">
         </div>
-
         <div class="mb-4">
             <label class="block text-gray-600 font-medium mb-2">Expiration Date</label>
             <input type="date" name="expiration_date" value="{{ product.expiration_date|date:'Y-m-d' }}" class="border rounded-md p-2 w-full">
         </div>
-
-        <div class="justify-center items-center text-center">
-            <button type="submit" class="bg-blue-700 text-white  px-28 py-2 rounded-md hover:bg-blue-800">Update Stock</button>
+        <div class="flex justify-center">
+            <button type="submit" class="bg-blue-700 text-white px-8 md:px-16 py-2 rounded-md hover:bg-blue-800">Update Stock</button>
         </div>
     </form>
 </div>

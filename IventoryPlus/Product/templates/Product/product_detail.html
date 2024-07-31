@@ -4,19 +4,14 @@
 {% block title %}Products Detail{% endblock title %}
 
 {% block content %}
-
-
-<script>
-    AOS.init();
-</script>
 <div class="container mx-auto p-4 ">
-    <div class="flex">
-        <div class="w-1/2">
+    <div class="flex flex-wrap">
+        <div class="w-full md:w-1/2">
             <img src="{{ product.product_image.url }}" alt="product Image"
-                class="w-[500px] h-[600px] object-contain rounded-xl">
+                class="w-full h-auto object-contain rounded-xl">
         </div>
 
-        <div class="w-1/2 pl-0">
+        <div class="w-full md:w-1/2 pl-0">
             <h1 class="text-3xl font-bold">{{ product.name }}</h1>
             <p class="pt-4 pb-2 text-gray-400 text-lg ">Stock Quantity {{ product.stock_quantity }}</p>
             <p class="pt-4 pb-2 text-black"><strong>Description :</strong> {{ product.description }}</p>
@@ -40,5 +35,15 @@
     </div>
 </div>
 
+<style>
+    @media (max-width: 768px) {
+        .w-full {
+            width: 100% !important;
+        }
+        .pl-0 {
+            padding-left: 0 !important;
+        }
+    }
+</style>
 
 {% endblock content %}
