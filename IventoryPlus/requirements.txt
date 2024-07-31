@@ -1,0 +1,14 @@
+asgiref==3.8.1
+Django==5.0.7
+django-multiselectfield==0.1.13
+django-phone-field==1.8.1
+django-phonenumber-field==8.0.0
+et-xmlfile==1.1.0
+openpyxl==3.1.5
+packaging==24.1
+pillow==10.4.0
+plotly==5.23.0
+psycopg2==2.9.9
+python-dotenv==1.0.1
+sqlparse==0.5.1
+tenacity==8.5.0

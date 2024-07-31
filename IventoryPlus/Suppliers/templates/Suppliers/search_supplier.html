@@ -1,0 +1,73 @@
+{% extends "Product/base.html" %}
+{% load static %}
+
+{% block title %}Search Suppliers{% endblock title %}
+
+{% block content %}
+<div class="content-home-padding pr-12">
+    <h1 class="bold-font-prop tilt-in-fwd-bl text-blue-800 pb-8">Search Supplier</h1>
+
+    <div class="mb-4 mr-4 flex justify-center">
+        <form action="{% url 'Suppliers:search' %}" method="GET" class="mb-16 mr-4 flex justify-center">
+            <input type="text" minlength="1" maxlength="512" required name="query" placeholder="Search by name, category, or supplier" value="{{ query }}"  class="mr-8 border p-2 rounded w-[800px] place-content-center justify-center">
+            <button type="submit" class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-8 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200">Search</button>
+            <span class="mx-2"></span>
+            <button type="button" class="hidden lg:inline-block py-2 px-6 bg-blue-800 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"><a href="{% url 'Suppliers:add_supplier' %}">Add Supplier</a></button>
+        </form>
+        <hr>
+    </div>
+
+
+    {% if query %}
+        {% if suppliers %}
+            <h2><span class="text-teal-500 font-semibold text-xl ">Search Results {{ count }} found:</span></h2>
+            <div class=" card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6 justify-center items-center">
+                {% for supplier in suppliers %}
+                    <div class="relative flex flex-col bg-white shadow-md rounded-xl overflow-hidden">
+                        <img src="{{ supplier.logo.url }}" alt="image" class="w-full h-56 object-cover rounded-t-xl" />
+                        <div class="p-4">
+                            <p class="font-sans text-base font-extrabold leading-relaxed hover:text-teal-500">
+                                <a href="{% url 'Suppliers:supplier_detail' supplier.pk %}">{{ supplier.name }}</a>
+                            </p>
+                            <p class="text-gray-500 font-medium">City: {{ supplier.city }}</p>
+                            <p class="text-gray-500 font-medium">Country: {{ supplier.country }}</p>
+                            <p class="text-gray-500 font-medium">Contact: {{ supplier.contact_person_name }}</p>
+                            <p class="text-gray-500 font-medium">Number: {{ supplier.phone_number }}</p>
+                            <p class="text-gray-500 font-medium">Supplied Products: {{ supplier.supplied_products }}</p>
+                            <p class="text-gray-500 font-medium">Services: {{ supplier.services_offered }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="flex justify-center items-center h-screen">
+                <div class="text-center">
+                    <img src="{% static 'images/nodata.png' %}" alt="No Data Image" class="pt-16 w-1/2 mx-auto"/>
+                    <h1 class="text-2xl font-bold text-black pt-4">Opss! Looks like there is nothing to display for "{{ query }}"</h1>
+                    <p class="text-lg text-gray-500 font-semibold mt-3 mb-8">Try something else...</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Pagination Controls -->
+    {% if suppliers.has_other_pages %}
+        <div class="flex justify-center mt-8">
+            <div class="flex items-center space-x-2">
+                {% if suppliers.has_previous %}
+                    <a href="?query={{ query }}&page=1" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105">&laquo; First</a>
+                    <a href="?query={{ query }}&page={{ suppliers.previous_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105">Previous</a>
+                {% endif %}
+                
+                <span class="px-4 py-2 text-gray-700 font-semibold">Page {{ suppliers.number }} of {{ suppliers.paginator.num_pages }}</span>
+                
+                {% if suppliers.has_next %}
+                    <a href="?query={{ query }}&page={{ suppliers.next_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105">Next</a>
+                    <a href="?query={{ query }}&page={{ suppliers.paginator.num_pages }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105">Last &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+<br><br>
+{% endblock content %}

@@ -1,0 +1,123 @@
+{% extends "Product/base.html" %}
+{% load static %}
+
+{% block title %}Update Supplier{% endblock title %}
+
+{% block content %}
+<section class="py-12 bg-gray-100">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-center text-blue-800 mb-8">Update Supplier</h2>
+            <form method="post" action="{% url 'Suppliers:update_supplier' supplier.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="mb-6">
+                        <label for="name" class="block text-sm font-medium text-gray-700">Supplier Name:</label>
+                        <input type="text" id="name" name="name" value="{{ form.name.value }}" minlength="3" max="255" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="contact_person_name" class="block text-sm font-medium text-gray-700">Contact Person Name:</label>
+                        <input type="text" id="contact_person_name" name="contact_person_name" value="{{ form.contact_person_name.value }}" minlength="3" max="255" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="contact_person_job_title" class="block text-sm font-medium text-gray-700">Contact Person Job Title:</label>
+                        <input type="text" id="contact_person_job_title" name="contact_person_job_title" value="{{ form.contact_person_job_title.value }}" minlength="3" max="255" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ form.email.value }}" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number:</label>
+                        <input type="tel" id="phone_number" name="phone_number" value="{{ form.phone_number.value }}" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="website" class="block text-sm font-medium text-gray-700">Website:</label>
+                        <input type="url" id="website" name="website" value="{{ form.website.value }}" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="city" class="block text-sm font-medium text-gray-700">City:</label>
+                        <input type="text" id="city" name="city" value="{{ form.city.value }}" minlength="3" max="255" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="country" class="block text-sm font-medium text-gray-700">Country:</label>
+                        <input type="text" id="country" name="country" value="{{ form.country.value }}" minlength="3" max="255" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="logo" class="block text-sm font-medium text-gray-700">Supplier Logo:</label>
+                        <input type="file" id="logo" name="logo" accept="image/*" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {% if form.logo.value %}
+                            <img src="{{ form.logo.value.url }}" alt="Current Logo" class="mt-4 w-32 h-32 rounded-lg shadow-md">
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="active" class="block text-sm font-medium text-gray-700">Active:</label>
+                        <select id="active" name="active" required class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="true" {% if form.active.value %}selected{% endif %}>Yes</option>
+                            <option value="false" {% if not form.active.value %}selected{% endif %}>No</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="rating" class="block text-sm font-medium text-gray-700">Rating:</label>
+                        <select id="rating" name="rating" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Rating</option>
+                            {% for value, label in rating_choices %}
+                                <option value="{{ value }}" {% if form.rating.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="policy_choices" class="block text-sm font-medium text-gray-700">Policy:</label>
+                        <select id="policy_choices" name="policy" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Policy</option>
+                            {% for value, label in policy_choices %}
+                                <option value="{{ value }}" {% if form.policy.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="supplied_products" class="block text-sm font-medium text-gray-700">Supplied Products:</label>
+                        <select id="supplied_products" name="supplied_products" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Product Type</option>
+                            {% for value, label in product_choices %}
+                                <option value="{{ value }}" {% if form.supplied_products.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="services_offered" class="block text-sm font-medium text-gray-700">Services Offered:</label>
+                        <select id="services_offered" name="services_offered" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Service</option>
+                            {% for value, label in service_choices %}
+                                <option value="{{ value }}" {% if form.services_offered.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+                    <textarea id="description" name="description" rows="4" class="mt-1 p-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500">{{ form.description.value }}</textarea>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg w-full transition duration-300">Update Supplier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}

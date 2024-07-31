@@ -1,0 +1,134 @@
+{% extends 'Product/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="grid grid-cols-1 gap-4 px-4 mt-8 sm:grid-cols-4 sm:px-8">
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-green-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+            </svg>
+
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Total Products</h3>
+            <p class="text-3xl">{{ total_products }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-blue-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Total Suppliers</h3>
+            <p class="text-3xl">{{ total_suppliers }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-indigo-400">
+            <img src="{% static 'images/catgory.png' %}" alt="Image" class="h-12 w-12">
+
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Total Categories</h3>
+            <p class="text-3xl">{{ total_categories }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-red-400">
+            <img src="{% static 'images/product.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Stock Status</h3>
+            <p class="text-3xl">{{ stock_status|floatformat:2 }}%</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-yellow-300">
+            <img src="{% static 'images/money.png' %}" alt="Image" class="h-12 w-12">
+
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Total Revenue</h3>
+            <p class="text-3xl">{{ total_revenue|floatformat:2 }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-purple-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 3h2M5 6h14M7 9h10M9 12h6M11 15h2M13 18h-2"></path>
+            </svg>
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Average Product Price</h3>
+            <p class="text-3xl">{{ average_product_price|floatformat:2 }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-teal-400">
+            <img src="{% static 'images/trending_up.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Top Category</h3>
+            <p class="text-3xl">{{ top_category }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-pink-400">
+            <img src="{% static 'images/down.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Lower Category</h3>
+            <p class="text-3xl">{{ lower_category }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-teal-400">
+            <img src="{% static 'images/trending_up.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Top Supplier</h3>
+            <p class="text-3xl">{{ top_supplier }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-red-400">
+            <img src="{% static 'images/down.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">Lower Supplier</h3>
+            <p class="text-3xl">{{ lower_supplier }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-yellow-400">
+            <img src="{% static 'images/down.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">low Price Product</h3>
+            <p class="text-3xl">{{ low_price }}</p>
+        </div>
+    </div>
+    <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+        <div class="p-4 bg-teal-400">
+            <img src="{% static 'images/trending_up.png' %}" alt="Image" class="h-12 w-12">
+        </div>
+    
+        <div class="px-4 text-gray-700">
+            <h3 class="text-sm tracking-wider">height Price Product</h3>
+            <p class="text-3xl">{{ high_price }}</p>
+        </div>
+    </div>
+
+
+    
+
+</div>
+{% include 'Reports/charts.html' %}
+{% endblock %}

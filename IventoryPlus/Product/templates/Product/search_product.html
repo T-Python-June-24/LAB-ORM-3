@@ -1,0 +1,52 @@
+{% extends "Product/base.html" %}
+{% load static %}
+
+{% block title %}Search Products{% endblock title %}
+
+{% block content %}
+<div class="content-home-padding pr-16">
+    <h1 class="bold-font-prop tilt-in-fwd-bl text-blue-800 mb-16"> Search Product </h1>
+
+    <form action="{% url 'Product:search' %}" method="GET" class="mb-8  mr-4 flex justify-center">
+        <input type="text" minlength="1" maxlength="512" required name="query" placeholder="Search by name, category, or supplier"  class="mr-8 border p-2 rounded w-full place-content-center justify-center">
+        <button type="submit" class="bg-blue-800 text-white py-2 px-8 rounded-lg">Search</button>
+    </form>
+
+    {% if query %}
+        {% if products %}
+            <h2><span class="text-teal-500 font-semibold text-xl">Search Results {{ count }} found:</span></h2>
+            <div class="card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                {% for product in products %}
+                <div class="relative flex flex-col bg-white shadow-md rounded-xl overflow-hidden">
+                    <img src="{{ product.product_image.url }}" alt="image" class="w-full h-56 object-cover rounded-t-xl" />
+                    <div class="p-4">
+                        <p class="font-sans text-base font-extrabold leading-relaxed hover:text-teal-500">
+                            <a href="{% url 'Product:product_detail' product.pk %}">{{ product.name }}</a>
+                        </p>
+                        <p class="text-gray-500 font-medium">Category: {{ product.category.name }}</p>
+
+
+                        <p class="text-gray-500 font-medium">
+                                {% for supplier in product.suppliers.all %}
+                                <a href="{% url 'Suppliers:supplier_detail' supplier.id %}" class="text-gray-500 font-medium">Supplier: {{ supplier.name }}</a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p class="text-gray-500 font-medium">Stock Quantity: {{ product.stock_quantity }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="flex justify-center items-start h-screen">
+                <div class="text-center">
+                    <img src="{% static 'images/nodata.png' %}" alt="No Data Image" class="pt-16 w-1/2 mx-auto"/>
+                    <h1 class="text-2xl font-bold text-black pt-4">Opss! Looks like there is nothing to display for "{{ query }}"</h1>
+                    <p class="text-lg text-gray-500 font-semibold mt-3 mb-8">Try something else...</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+<br><br>
+{% endblock content %}

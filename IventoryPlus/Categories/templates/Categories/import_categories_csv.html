@@ -1,0 +1,33 @@
+{% extends "Product/base.html" %}
+{% block title %}Add Category{% endblock title %}
+
+{% block content %}
+<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h1 class="tilt-in-fwd-bl text-center text-3xl font-bold text-blue-800 mb-8">Import Categories from CSV</h1>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="mt-8 space-y-6 bg-white p-8 shadow rounded-lg">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div class="mb-4">
+                    <label for="csv_file" class="block text-gray-700 text-sm font-bold mb-2">Choose CSV file:</label>
+                    <input type="file" accept=".csv" id="csv_file" name="csv_file" required class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Upload
+                </button>
+            </div>
+        </form>
+        {% if error %}
+            <div class="mt-4">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ error }}</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

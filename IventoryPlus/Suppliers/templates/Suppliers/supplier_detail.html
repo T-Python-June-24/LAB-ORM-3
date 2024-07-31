@@ -1,0 +1,53 @@
+{% extends "Product/base.html" %}
+{% load static %}
+
+{% block title %}Supplier Detail{% endblock title %}
+
+{% block content %}
+
+<script>
+    AOS.init();
+</script>
+
+<div class="container mx-auto p-4">
+    <div class="flex flex-col md:flex-row">
+        <!-- Image Section -->
+        <div class="w-full md:w-1/2 mb-6 md:mb-0">
+            <img src="{{ supplier.logo.url }}" alt="{{ supplier.name }}'s Logo"
+                class="w-full h-[500px] object-cover rounded-xl shadow-md">    
+                <p class="text-gray-600 text-lg m-8"><strong>Description:</strong> {{ supplier.description }}</p>
+
+        </div>
+
+        <!-- Details Section -->
+        <div class="w-full md:w-1/2 pl-0 md:pl-6">
+            <h1 class="text-3xl font-bold mb-4">{{ supplier.name }}</h1>
+            <p class="text-gray-600 text-lg mb-2"><strong>Website:</strong> <a href="{{ supplier.website }}" class="text-teal-500 hover:underline">{{ supplier.website }}</a></p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Contact Person:</strong> {{ supplier.contact_person_name }}</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Contact Person Job Title:</strong> {{ supplier.contact_person_job_title }}</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Email:</strong><a href="mailto:{{ supplier.email }}" class="text-blue-500 hover:underline"> {{ supplier.email }}</a></p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Phone Number:</strong><a href="tel:{{ supplier.phone_number }}" class="text-blue-500 hover:underline"> {{ supplier.phone_number }} </a></p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Country:</strong> {{ supplier.country }}</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>City:</strong> {{ supplier.city }}</p>
+            <p class="text-lg mb-2">
+                <strong class="text-gray-600">Active:</strong>
+                <span class="{% if supplier.active %}text-green-500{% else %}text-red-500{% endif %} font-bold">
+                    {{ supplier.active|yesno:"Yes,No" }}
+                </span>
+            </p>            <p class="text-gray-600 text-lg mb-2"><strong>Rating:</strong> {{ supplier.rating }} ⭐️</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Supplied Products:</strong> {{ supplier.get_supplied_products_display }}</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Services Offered:</strong> {{ supplier.services_offered }}</p>
+            <p class="text-gray-600 text-lg mb-2"><strong>Supplier Policy:</strong> {{ supplier.policy }}</p>
+            <p class="text-gray-400 text-sm"><strong>Created At:</strong> {{ supplier.created_at }}</p>
+
+            <!-- Action Buttons -->
+            <div class="mt-6 mb-6 justify-center text-center items-center">
+                <a href="{% url 'Suppliers:update_supplier' supplier.id %}" class="bg-teal-500 text-white py-2 px-12 rounded-lg shadow-md hover:bg-teal-600">Edit</a>
+                <a href="{% url 'Suppliers:delete_supplier' supplier.id %}" class="bg-red-500 text-white py-2 px-12 rounded-lg shadow-md hover:bg-red-600 ml-4">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+
+{% endblock content %}

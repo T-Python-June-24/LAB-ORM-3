@@ -1,0 +1,21 @@
+{% extends "Product/base.html" %}
+{% load static %}
+
+{% block title %} Thanks {% endblock title %}
+{% block content %}
+
+<div class="flex justify-center items-start h-screen">
+
+    <div class="text-center slide-in-elliptic-bottom-bck">
+            <img src="{% static 'images/done.webp' %}" alt="Thanks Image" class="w-1/2 mx-auto"/>
+            <h1 class="text-9xl font-bold text-black">Thank You</h1>
+            <p class="text-l text-gray-500 font-semibold mt-3 mb-8">the operation has been done successfully<span class="text-teal-500 font-bold text-xl">{{ product.name }}</span>!</p>
+            <div class="text-center mt-2">
+                <div class="flex justify-center space-x-4 mt-4">
+                    <a href="{% url 'Product:product_list' %}" class="bg-blue-600 text-white py-2 px-16 rounded-lg inline-block text-center">Display Product</a>
+                </div>
+                
+            </div>
+    </div>
+</div>
+{% endblock content %}
