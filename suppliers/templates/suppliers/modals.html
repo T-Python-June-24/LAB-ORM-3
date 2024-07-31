@@ -1,0 +1,355 @@
+<!-- Import CSV Modal -->
+<div id="importModal" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('importModal')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Import Suppliers CSV</h3>
+    <form
+      method="POST"
+      action="{% url 'import_suppliers_csv' %}"
+      enctype="multipart/form-data"
+      id="importCSVForm"
+    >
+      {% csrf_token %}
+      <div class="form-control">
+        <label class="label" for="csv_file">
+          <span class="label-text">Select CSV File</span>
+        </label>
+        <input
+          type="file"
+          name="csv_file"
+          id="csv_file"
+          accept=".csv"
+          required
+          class="tooltip file-input file-input-bordered w-full"
+          data-tip="CSV format: Name, Email, Phone, Address, Website, Last Active"
+        />
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="importCSVBtn">
+          Import
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          onclick="closeModal('importModal')"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Create Supplier Modal -->
+<div id="createModal" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('createModal')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Create Supplier</h3>
+    <form
+      method="POST"
+      action="{% url 'supplier_create' %}"
+      id="createSupplierForm"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div class="form-control">
+        <label class="label" for="id_name">
+          <span class="label-text">Name</span>
+        </label>
+        <input
+          type="text"
+          name="name"
+          id="id_name"
+          class="input input-bordered"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_email">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          class="input input-bordered"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_phone">
+          <span class="label-text">Phone</span>
+        </label>
+        <input
+          type="text"
+          name="phone"
+          id="id_phone"
+          class="input input-bordered"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_address">
+          <span class="label-text">Address</span>
+        </label>
+        <textarea
+          name="address"
+          id="id_address"
+          class="textarea textarea-bordered"
+          required
+        ></textarea>
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_website">
+          <span class="label-text">Website</span>
+        </label>
+        <input
+          type="url"
+          name="website"
+          id="id_website"
+          class="input input-bordered"
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_image">
+          <span class="label-text">Image</span>
+        </label>
+        <input
+          type="file"
+          name="image"
+          id="id_image"
+          class="file-input file-input-bordered w-full"
+          accept="image/*"
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_last_active">
+          <span class="label-text">Last Active</span>
+        </label>
+        <input
+          type="datetime-local"
+          name="last_active"
+          id="id_last_active"
+          class="input input-bordered"
+          required
+        />
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="createSupplierBtn">
+          Create
+        </button>
+        <button type="button" class="btn" onclick="closeModal('createModal')">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Update Supplier Modals -->
+{% for supplier in suppliers %}
+<div id="updateModal{{ supplier.id }}" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('updateModal{{ supplier.id }}')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Update Supplier</h3>
+    <form
+      method="POST"
+      action="{% url 'supplier_update' supplier.id %}"
+      id="updateSupplierForm{{ supplier.id }}"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div class="form-control">
+        <label class="label" for="id_name_{{ supplier.id }}">
+          <span class="label-text">Name</span>
+        </label>
+        <input
+          type="text"
+          name="name"
+          id="id_name_{{ supplier.id }}"
+          class="input input-bordered"
+          value="{{ supplier.name }}"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_email_{{ supplier.id }}">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="id_email_{{ supplier.id }}"
+          class="input input-bordered"
+          value="{{ supplier.email }}"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_phone_{{ supplier.id }}">
+          <span class="label-text">Phone</span>
+        </label>
+        <input
+          type="text"
+          name="phone"
+          id="id_phone_{{ supplier.id }}"
+          class="input input-bordered"
+          value="{{ supplier.phone }}"
+          required
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_address_{{ supplier.id }}">
+          <span class="label-text">Address</span>
+        </label>
+        <textarea
+          name="address"
+          id="id_address_{{ supplier.id }}"
+          class="textarea textarea-bordered"
+          required
+        >{{ supplier.address }}</textarea>
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_website_{{ supplier.id }}">
+          <span class="label-text">Website</span>
+        </label>
+        <input
+          type="url"
+          name="website"
+          id="id_website_{{ supplier.id }}"
+          class="input input-bordered"
+          value="{{ supplier.website }}"
+        />
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_image_{{ supplier.id }}">
+          <span class="label-text">Image</span>
+        </label>
+        <input
+          type="file"
+          name="image"
+          id="id_image_{{ supplier.id }}"
+          class="file-input file-input-bordered w-full"
+          accept="image/*"
+        />
+        {% if supplier.image %}
+        <p class="mt-2">Current image: {{ supplier.image.name }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="id_last_active_{{ supplier.id }}">
+          <span class="label-text">Last Active</span>
+        </label>
+        <input
+          type="datetime-local"
+          name="last_active"
+          id="id_last_active_{{ supplier.id }}"
+          class="input input-bordered"
+          value="{{ supplier.last_active|date:'Y-m-d\TH:i' }}"
+          required
+        />
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="updateSupplierBtn{{ supplier.id }}">
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn"
+          onclick="closeModal('updateModal{{ supplier.id }}')"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Delete Supplier Modals -->
+{% for supplier in suppliers %}
+<div id="deleteModal{{ supplier.id }}" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('deleteModal{{ supplier.id }}')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Delete Supplier</h3>
+    <p>Are you sure you want to delete {{ supplier.name }}?</p>
+    <form
+      method="POST"
+      action="{% url 'supplier_delete' supplier.id %}"
+      id="deleteSupplierForm{{ supplier.id }}"
+    >
+      {% csrf_token %}
+      <div class="modal-action">
+        <button type="submit" class="btn btn-error" id="deleteSupplierBtn{{ supplier.id }}">
+          Delete
+        </button>
+        <button
+          type="button"
+          class="btn"
+          onclick="closeModal('deleteModal{{ supplier.id }}')"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+function openModal(modalId) {
+  document.getElementById(modalId).classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('modal-open');
+}
+
+function handleFormSubmit(formId, buttonId) {
+  const form = document.getElementById(formId);
+  const button = document.getElementById(buttonId);
+  const allButtons = document.querySelectorAll('button');
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (button.disabled) return;
+
+    allButtons.forEach(btn => btn.disabled = true);
+    button.disabled = true;
+    button.classList.add('btn-disabled');
+    button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+
+    this.submit();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  handleFormSubmit('importCSVForm', 'importCSVBtn');
+  handleFormSubmit('createSupplierForm', 'createSupplierBtn');
+  {% for supplier in suppliers %}
+    handleFormSubmit('updateSupplierForm{{ supplier.id }}', 'updateSupplierBtn{{ supplier.id }}');
+    handleFormSubmit('deleteSupplierForm{{ supplier.id }}', 'deleteSupplierBtn{{ supplier.id }}');
+  {% endfor %}
+});
+</script>

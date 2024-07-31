@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Product Details</h1>
+
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                {{ product.name }}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p><strong class="font-semibold">Description:</strong> {{ product.description }}</p>
+                    <p><strong class="font-semibold">Category:</strong> {{ product.category.name }}</p>
+                    <p><strong class="font-semibold">Price:</strong> ${{ product.price }}</p>
+                </div>
+                <div>
+                    <p><strong class="font-semibold">Quantity:</strong> {{ product.quantity }}</p>
+                    <p><strong class="font-semibold">Supplier:</strong> {{ product.supplier.name|default:"-" }}</p>
+                    <p><strong class="font-semibold">Expiry Date:</strong> {{ product.expiry_date|date:"Y-m-d"|default:"-" }}</p>
+                </div>
+            </div>
+            <div class="card-actions justify-end mt-6">
+                <button class="btn btn-primary" onclick="openModal('updateModal')">Edit</button>
+                <button class="btn btn-error" onclick="openModal('deleteModal')">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Product Modal -->
+    <div id="updateModal" class="modal z-[1000]">
+        <div class="modal-box">
+            <button onclick="closeModal('updateModal')" class="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+            <h3 class="font-bold text-lg mb-4">Update Product</h3>
+            <form method="POST" action="{% url 'product_detail' product.id %}" id="updateProductForm">
+                {% csrf_token %}
+                <input type="hidden" name="update" value="1">
+                {% for field in form %}
+                    <div class="form-control w-full mb-4">
+                        <label class="label" for="{{ field.id_for_label }}">
+                            <span class="label-text">{{ field.label }}</span>
+                        </label>
+                        {% if field.field.widget.input_type == 'text' or field.field.widget.input_type == 'number' %}
+                            <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                   class="input input-bordered w-full" value="{{ field.value|default:'' }}" 
+                                   {% if field.field.required %}required{% endif %}>
+                        {% elif field.field.widget.input_type == 'select' %}
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                    class="select select-bordered w-full" 
+                                    {% if field.field.required %}required{% endif %}>
+                                {% for choice in field.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if field.value|stringformat:"s" == choice.0|stringformat:"s" %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% elif field.name == 'description' %}
+                            <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                      class="textarea textarea-bordered w-full h-24" 
+                                      {% if field.field.required %}required{% endif %}>{{ field.value|default:'' }}</textarea>
+                        {% elif field.field.widget.input_type == 'date' %}
+                            <input type="date" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                   class="input input-bordered w-full" value="{{ field.value|date:'Y-m-d' }}" 
+                                   {% if field.field.required %}required{% endif %}>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% if field.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-primary" id="updateProductBtn">
+                        Update
+                    </button>
+                    <button type="button" class="btn" onclick="closeModal('updateModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Product Modal -->
+    <div id="deleteModal" class="modal z-[1000]">
+        <div class="modal-box">
+            <button onclick="closeModal('deleteModal')" class="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+            <h3 class="font-bold text-lg">Delete Product</h3>
+            <p>Are you sure you want to delete {{ product.name }}?</p>
+            <form method="POST" action="{% url 'product_detail' product.id %}" id="deleteProductForm">
+                {% csrf_token %}
+                <input type="hidden" name="delete" value="1">
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-error" id="deleteProductBtn">
+                        Delete
+                    </button>
+                    <button type="button" class="btn" onclick="closeModal('deleteModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('modal-open');
+}
+
+
+function handleFormSubmit(formId, buttonId) {
+    const form = document.getElementById(formId);
+    const button = document.getElementById(buttonId);
+    const allButtons = document.querySelectorAll('button');
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        if (button.disabled) return;
+
+        allButtons.forEach(btn => btn.disabled = true);
+        button.disabled = true;
+        button.classList.add('btn-disabled');
+        button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+
+        this.submit();
+    });
+  }
+
+document.addEventListener('DOMContentLoaded', function() {
+    handleFormSubmit('updateProductForm', 'updateProductBtn');
+    handleFormSubmit('deleteProductForm', 'deleteProductBtn');
+});
+</script>
+{% endblock %}

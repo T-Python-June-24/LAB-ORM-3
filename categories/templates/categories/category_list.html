@@ -1,0 +1,115 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto p-6 bg-base-100 text-base-content rounded-lg animate__animated animate__fadeIn">
+  <h1 class="text-3xl font-bold mb-6 animate__animated animate__fadeInDown">Categories</h1>
+
+  <!-- Search form -->
+  <form method="get" class="mb-4 animate__animated animate__fadeInRight" id="searchForm">
+    {% csrf_token %}
+    <div class="form-control">
+      <div class="input-group join">
+        <input type="text" name="search" placeholder="Search categories..." class="input input-bordered join-item" value="{{ search_query }}">
+        <button type="submit" class="btn btn-square join-item" id="searchBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <div class="overflow-x-auto animate__animated animate__fadeIn animate__delay-1s">
+    <table class="table table-zebra w-full transition-opacity duration-500">
+      <thead>
+        <tr>
+          <th>
+            <a href="?sort={% if current_sort == 'name' %}-{% endif %}name{% if search_query %}&search={{ search_query }}{% endif %}">
+              Name
+              {% if current_sort == 'name' %}▲{% elif current_sort == '-name' %}▼{% endif %}
+            </a>
+          </th>
+          <th>Description</th>
+          <th>Product Count</th>
+          <th>Total Quantity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in page_obj %}
+        <tr>
+          <td>{{ category.name }}</td>
+          <td>{{ category.description }}</td>
+          <td>{{ category.product_count }}</td>
+          <td>{{ category.total_quantity|default_if_none:0 }}</td>
+          <td>
+            <div class="dropdown dropdown-left">
+              <div tabindex="0" role="button" class="btn m-1 btn-primary">Edit/Delete</div>
+              <ul
+                tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+              >
+                <li>
+                  <button
+                    onclick="openModal('updateModal{{ category.id }}')"
+                  >
+                    Edit
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="openModal('deleteCategoryModal{{ category.id }}')"
+                  >
+                    Delete
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {%include 'categories/controllers.html'%}
+</div>
+{%include 'categories/modals.html'%}
+
+<script>
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.add('modal-open');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('modal-open');
+  }
+
+  function handleFormSubmit(formId, buttonId) {
+    const form = document.getElementById(formId);
+    const button = document.getElementById(buttonId);
+    const allButtons = document.querySelectorAll('button');
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        if (button.disabled) return;
+
+        allButtons.forEach(btn => btn.disabled = true);
+        button.disabled = true;
+        button.classList.add('btn-disabled');
+        button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+
+        this.submit();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    handleFormSubmit('searchForm', 'searchBtn');
+    handleFormSubmit('importCSVForm', 'importCSVBtn');
+    handleFormSubmit('createCategoryForm', 'createCategoryBtn');
+    {% for category in page_obj %}
+      handleFormSubmit('updateCategoryForm{{ category.id }}', 'updateCategoryBtn{{ category.id }}');
+      handleFormSubmit('deleteCategoryForm{{ category.id }}', 'deleteCategoryBtn{{ category.id }}');
+    {% endfor %}
+  });
+</script>
+{% endblock %}

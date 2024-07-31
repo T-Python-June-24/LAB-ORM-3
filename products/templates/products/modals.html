@@ -1,0 +1,297 @@
+<!-- Import CSV Modal -->
+<div id="importModal" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('importModal')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Import Products CSV</h3>
+    <form
+      method="POST"
+      action="{% url 'import_products_csv' %}"
+      enctype="multipart/form-data"
+      id="importCSVForm"
+    >
+      {% csrf_token %}
+      <div class="form-control">
+        <label class="label" for="csv_file">
+          <span class="label-text">Select CSV File</span>
+        </label>
+        <input
+          type="file"
+          name="csv_file"
+          id="csv_file"
+          accept=".csv"
+          required
+          class="tooltip file-input file-input-bordered w-full"
+          data-tip="CSV format: Name, Description, Category, Price, Supplier, Quantity, Expiry Date"
+        />
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="importCSVBtn">
+          Import
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          onclick="closeModal('importModal')"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Create Product Modal -->
+<div id="createModal" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('createModal')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Create Product</h3>
+    <form method="POST" action="{% url 'product_list' %}" id="createProductForm">
+      {% csrf_token %}
+      <input type="hidden" name="create" value="1">
+      <div class="form-control">
+        <label class="label" for="{{ form.name.id_for_label }}">
+          <span class="label-text">Product Name</span>
+        </label>
+        <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" class="input input-bordered" required>
+        {% if form.name.errors %}
+          <p class="text-error text-xs italic">{{ form.name.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.description.id_for_label }}">
+          <span class="label-text">Description</span>
+        </label>
+        <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" class="textarea textarea-bordered" required></textarea>
+        {% if form.description.errors %}
+          <p class="text-error text-xs italic">{{ form.description.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.category.id_for_label }}">
+          <span class="label-text">Category</span>
+        </label>
+        <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="select select-bordered" required>
+          <option value="">Select a category</option>
+          {% for choice in form.category.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+        {% if form.category.errors %}
+          <p class="text-error text-xs italic">{{ form.category.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.price.id_for_label }}">
+          <span class="label-text">Price</span>
+        </label>
+        <input type="number" name="{{ form.price.name }}" id="{{ form.price.id_for_label }}" class="input input-bordered" step="0.01" required>
+        {% if form.price.errors %}
+          <p class="text-error text-xs italic">{{ form.price.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.supplier.id_for_label }}">
+          <span class="label-text">Supplier</span>
+        </label>
+        <select name="{{ form.supplier.name }}" id="{{ form.supplier.id_for_label }}" class="select select-bordered">
+          <option value="">Select a supplier</option>
+          {% for choice in form.supplier.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+        {% if form.supplier.errors %}
+          <p class="text-error text-xs italic">{{ form.supplier.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.quantity.id_for_label }}">
+          <span class="label-text">Quantity</span>
+        </label>
+        <input type="number" name="{{ form.quantity.name }}" id="{{ form.quantity.id_for_label }}" class="input input-bordered" required>
+        {% if form.quantity.errors %}
+          <p class="text-error text-xs italic">{{ form.quantity.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.expiry_date.id_for_label }}">
+          <span class="label-text">Expiry Date</span>
+        </label>
+        <input type="text" name="expiry_date" id="expiry_date_create" class="input input-bordered" required>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.low_stock_threshold.id_for_label }}">
+          <span class="label-text">Low Stock Threshold</span>
+        </label>
+        <input type="number" name="{{ form.low_stock_threshold.name }}" id="{{ form.low_stock_threshold.id_for_label }}" class="input input-bordered" required>
+        {% if form.low_stock_threshold.errors %}
+          <p class="text-error text-xs italic">{{ form.low_stock_threshold.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="createProductBtn">
+          Create
+        </button>
+        <button type="button" class="btn" onclick="closeModal('createModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Update Product Modals -->
+{% for product in products %}
+<div id="updateModal{{ product.id }}" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('updateModal{{ product.id }}')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Update Product</h3>
+    <form method="POST" action="{% url 'product_list' %}" id="updateProductForm{{ product.id }}">
+      {% csrf_token %}
+      <input type="hidden" name="update" value="1">
+      <input type="hidden" name="product_id" value="{{ product.id }}">
+      <div class="form-control">
+        <label class="label" for="{{ form.name.id_for_label }}">
+          <span class="label-text">Product Name</span>
+        </label>
+        <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" class="input input-bordered" value="{{ product.name }}" required>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.description.id_for_label }}">
+          <span class="label-text">Description</span>
+        </label>
+        <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" class="textarea textarea-bordered" required>{{ product.description }}</textarea>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.category.id_for_label }}">
+          <span class="label-text">Category</span>
+        </label>
+        <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="select select-bordered" required>
+          {% for choice in form.category.field.choices %}
+            <option value="{{ choice.0 }}" {% if product.category and product.category.id == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.price.id_for_label }}">
+          <span class="label-text">Price</span>
+        </label>
+        <input type="number" name="{{ form.price.name }}" id="{{ form.price.id_for_label }}" class="input input-bordered" step="0.01" value="{{ product.price }}" required>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.supplier.id_for_label }}">
+          <span class="label-text">Supplier</span>
+        </label>
+        <select name="{{ form.supplier.name }}" id="{{ form.supplier.id_for_label }}" class="select select-bordered">
+          <option value="">Select a supplier</option>
+          {% for choice in form.supplier.field.choices %}
+            <option value="{{ choice.0 }}" {% if product.supplier and product.supplier.id == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.quantity.id_for_label }}">
+          <span class="label-text">Quantity</span>
+        </label>
+        <input type="number" name="{{ form.quantity.name }}" id="{{ form.quantity.id_for_label }}" class="input input-bordered" value="{{ product.quantity }}" required>
+      </div>
+      <div class="form-control">
+        <label class="label" for="expiry_date_update_{{ product.id }}">
+          <span class="label-text">Expiry Date</span>
+        </label>
+        <input type="text" name="expiry_date" id="expiry_date_update_{{ product.id }}" class="input input-bordered" value="{{ product.expiry_date|date:"Y-m-d"|default_if_none:"" }}" required>
+      </div>
+      <div class="form-control">
+        <label class="label" for="{{ form.low_stock_threshold.id_for_label }}">
+          <span class="label-text">Low Stock Threshold</span>
+        </label>
+        <input type="number" name="{{ form.low_stock_threshold.name }}" id="{{ form.low_stock_threshold.id_for_label }}" class="input input-bordered" value="{{ product.low_stock_threshold }}" required>
+        {% if form.low_stock_threshold.errors %}
+          <p class="text-error text-xs italic">{{ form.low_stock_threshold.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div class="modal-action">
+        <button type="submit" class="btn btn-primary" id="updateProductBtn{{ product.id }}">
+          Update
+        </button>
+        <button type="button" class="btn" onclick="closeModal('updateModal{{ product.id }}')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Delete Product Modals -->
+{% for product in products %}
+<div id="deleteModal{{ product.id }}" class="modal">
+  <div class="modal-box relative max-w-xl mx-auto">
+    <button
+      onclick="closeModal('deleteModal{{ product.id }}')"
+      class="btn btn-sm btn-circle absolute right-2 top-2"
+    >
+      ✕
+    </button>
+    <h3 class="font-bold text-lg">Delete Product</h3>
+    <p>Are you sure you want to delete {{ product.name }}?</p>
+    <form method="POST" action="{% url 'product_delete' product.id %}" id="deleteProductForm{{ product.id }}">
+      {% csrf_token %}
+      <div class="modal-action">
+        <button type="submit" class="btn btn-error" id="deleteProductBtn{{ product.id }}">
+          Delete
+        </button>
+        <button type="button" class="btn" onclick="closeModal('deleteModal{{ product.id }}')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+function openModal(modalId) {
+  document.getElementById(modalId).classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('modal-open');
+}
+
+function handleFormSubmit(formId, buttonId) {
+  const form = document.getElementById(formId);
+  const button = document.getElementById(buttonId);
+  const allButtons = document.querySelectorAll('button');
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (button.disabled) return;
+
+    allButtons.forEach(btn => btn.disabled = true);
+    button.disabled = true;
+    button.classList.add('btn-disabled');
+    button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+
+    this.submit();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  handleFormSubmit('importCSVForm', 'importCSVBtn');
+  handleFormSubmit('createProductForm', 'createProductBtn');
+  {% for product in products %}
+    handleFormSubmit('updateProductForm{{ product.id }}', 'updateProductBtn{{ product.id }}');
+    handleFormSubmit('deleteProductForm{{ product.id }}', 'deleteProductBtn{{ product.id }}');
+  {% endfor %}
+});
+</script>

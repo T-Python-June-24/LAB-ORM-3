@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="transition-colors duration-300">
+  <head>
+    <script>
+      (function () {
+        var theme = localStorage.getItem("theme") || "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://i.ibb.co/P9Ccr3b/icons8-inventory-96.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Inventory Management System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            screens: {
+              xs: "480px",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+ 
+    <style>
+      .theme-transition,
+      .theme-transition *,
+      .theme-transition *:before,
+      .theme-transition *:after {
+        transition: all 0.3s ease-in-out !important;
+        transition-delay: 0 !important;
+      }
+      .modal {
+        z-index: 1000;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col md:flex-row min-h-screen bg-base-200">
+    {% include 'navbar.html' %}
+    <main class="flex-grow p-4 md:p-8 w-full overflow-x-hidden">
+      <div class="container mx-auto">
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div
+            class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+          >
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %} {% block content %} {% endblock %}
+      </div>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+          document.querySelectorAll(".alert").forEach(function (alert) {
+            alert.remove();
+          });
+        }, 5000);
+      });
+
+      function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute("data-theme");
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+
+        // Add transition class
+        html.classList.add("theme-transition");
+
+        // Set timeout to remove transition class after animation completes
+        setTimeout(() => {
+          html.classList.remove("theme-transition");
+        }, 300);
+
+        html.setAttribute("data-theme", newTheme);
+        html.classList.toggle("dark");
+        localStorage.setItem("theme", newTheme);
+        updateThemeToggles(newTheme);
+      }
+
+      function updateThemeToggles(theme) {
+        document.querySelectorAll(".theme-toggle").forEach((toggle) => {
+          toggle.checked = theme === "light";
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        document.documentElement.classList.toggle(
+          "dark",
+          savedTheme === "dark"
+        );
+        updateThemeToggles(savedTheme);
+      });
+
+      // Add this new function
+      function adjustContentPadding() {
+        const navbar = document.querySelector("nav");
+        const main = document.querySelector("main");
+        if (window.innerWidth < 768) {
+          main.style.paddingBottom = navbar.offsetHeight + 16 + "px";
+        } else {
+          main.style.paddingBottom = "1rem";
+        }
+      }
+
+      // Call the function on load and resize
+      window.addEventListener("load", adjustContentPadding);
+      window.addEventListener("resize", adjustContentPadding);
+
+  
+
+    </script>
+    {% block scripts %} {% endblock %}
+  </body>
+</html>

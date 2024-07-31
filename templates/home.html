@@ -1,0 +1,194 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Home - Inventory
+Management System{% endblock %} {% block content %}
+<div class="container mx-auto px-2 py-4 bg-base-100 text-base-content">
+  <label class="swap swap-rotate flex justify-end md:hidden">
+    <input type="checkbox" class="theme-toggle" onclick="toggleTheme()" />
+
+    <svg
+      class="swap-on h-8 w-8 fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24">
+      <path
+        d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
+    </svg>
+  
+    <svg
+      class="swap-off h-8 w-8 fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24">
+      <path
+        d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
+    </svg>
+  </label>
+  <h1 class="text-2xl sm:text-3xl font-bold mb-4 text-center">
+    <i class="fas fa-chart-line mr-2"></i>Inventory Dashboard
+  </h1>
+
+  <!-- Top Stats -->
+  <div
+    class="stat bg-transparent text-neutral-content rounded-box shadow-sm p-2"
+  >
+    <div class="stat-title text-lg sm:text-xl text-base-content font-bold">
+      <i class="fas fa-dollar-sign mr-2"></i>Total Spending
+    </div>
+    <div
+      class="stat-value text-3xl sm:text-4xl text-neutral-content"
+      id="totalValue"
+    >
+      <div class="skeleton h-10 w-32"></div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
+    <div
+      class="stat bg-primary/20 text-primary-content rounded-box shadow-sm p-2"
+    >
+      <div class="stat-title text-sm sm:text-md text-base-content font-bold">
+        <i class="fas fa-box mr-2"></i>Total Products
+      </div>
+      <div
+        class="stat-value text-xl sm:text-2xl text-primary"
+        id="totalProducts"
+      >
+        <div class="skeleton h-8 w-20"></div>
+      </div>
+    </div>
+    <div
+      class="stat bg-secondary/20 text-secondary-content rounded-box shadow-sm p-2"
+    >
+      <div class="stat-title text-sm sm:text-md text-base-content font-bold">
+        <i class="fas fa-cubes mr-2"></i>Total Quantity
+      </div>
+      <div
+        class="stat-value text-xl sm:text-2xl text-secondary"
+        id="totalQuantity"
+      >
+        <div class="skeleton h-8 w-20"></div>
+      </div>
+    </div>
+    <div class="stat bg-info/20 text-info-content rounded-box shadow-sm p-2">
+      <div class="stat-title text-sm sm:text-md text-base-content font-bold">
+        <i class="fas fa-truck mr-2"></i>Total Suppliers
+      </div>
+      <div
+        class="stat-value text-xl sm:text-2xl text-info"
+        id="total_suppliers"
+      >
+        <div class="skeleton h-8 w-20"></div>
+      </div>
+    </div>
+    <div
+      class="stat bg-accent/20 text-accent-content rounded-box shadow-sm p-2"
+    >
+      <div class="stat-title text-sm sm:text-md text-base-content font-bold">
+        <i class="fas fa-exclamation-triangle mr-2"></i>Low Stock Products
+      </div>
+      <div
+        class="stat-value text-xl sm:text-2xl text-accent"
+        id="lowStockProducts"
+      >
+        <div class="skeleton h-8 w-20"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Latest Products Table -->
+  <div class="space-y-4 mb-4">
+    <div class="bg-base-200 p-2 sm:p-4 rounded-box shadow-sm">
+      <h2 class="text-lg sm:text-xl font-bold mb-2">
+        <i class="fas fa-list mr-2"></i>Latest Products Added
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Supplier</th>
+              <th>Added On</th>
+            </tr>
+          </thead>
+          <tbody id="latest-products-tbody">
+            <!-- Skeleton loader for table rows -->
+            {% for i in '12345'|make_list %}
+            <tr>
+              <td><div class="skeleton h-4 w-4"></div></td>
+              <td><div class="skeleton h-4 w-32"></div></td>
+              <td><div class="skeleton h-4 w-24"></div></td>
+              <td><div class="skeleton h-4 w-16"></div></td>
+              <td><div class="skeleton h-4 w-24"></div></td>
+              <td><div class="skeleton h-4 w-24"></div></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="space-y-4 mb-4">
+    <!-- First chart (full width) -->
+    <div class="bg-base-200 p-2 sm:p-4 rounded-box shadow-sm">
+      <h2 class="text-lg sm:text-xl font-bold mb-2">
+        <i class="fas fa-chart-pie mr-2"></i>Category Distribution
+      </h2>
+      <div style="height: 400px">
+        <canvas id="categoryDistribution"></canvas>
+      </div>
+      <p id="categoryDistributionDescription" class="mt-2 text-xs sm:text-sm">
+        This chart shows the distribution of products across different
+        categories. It helps identify which categories have the most products.
+      </p>
+    </div>
+
+    <!-- Two charts side by side -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <div class="bg-base-200 p-2 sm:p-4 rounded-box shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold mb-2">
+          <i class="fas fa-chart-bar mr-2"></i>Top 10 Products by Quantity
+        </h2>
+        <div style="height: 200px">
+          <canvas id="topProducts"></canvas>
+        </div>
+        <p id="topProductsDescription" class="mt-2 text-xs sm:text-sm">
+          This chart displays the top 10 products by quantity. It helps identify
+          the most stocked items in the inventory.
+        </p>
+      </div>
+      <div class="bg-base-200 p-2 sm:p-4 rounded-box shadow-sm">
+        <h2 class="text-lg sm:text-xl font-bold mb-2">
+          <i class="fas fa-chart-pie mr-2"></i>Supplier Distribution
+        </h2>
+        <div style="height: 200px">
+          <canvas id="supplierDistribution"></canvas>
+        </div>
+        <p id="supplierDistributionDescription" class="mt-2 text-xs sm:text-sm">
+          This chart illustrates the distribution of products among different
+          suppliers. It helps understand the diversity of your supply chain.
+        </p>
+      </div>
+    </div>
+
+    <!-- Last chart (full width) -->
+    <div class="bg-base-200 p-2 sm:p-4 rounded-box shadow-sm">
+      <h2 class="text-lg sm:text-xl font-bold mb-2">
+        <i class="fas fa-chart-line mr-2"></i>Monthly Spending Trend
+      </h2>
+      <div style="height: 200px">
+        <canvas id="monthlySalesTrend"></canvas>
+      </div>
+      <p id="monthlySalesTrendDescription" class="mt-2 text-xs sm:text-sm">
+        This chart shows the monthly spending trend over time. It helps
+        visualize spending performance and identify patterns or seasonality.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+<script>
+
+</script>
+{% endblock %}

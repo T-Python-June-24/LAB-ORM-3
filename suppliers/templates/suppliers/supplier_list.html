@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-base-100 text-base-content rounded-lg " >
+    <h1 class="text-3xl font-bold mb-6">Suppliers</h1>
+
+    <!-- Search and Filter Form -->
+    <form method="get" class="mb-6">
+        <div class="flex flex-wrap gap-4">
+            <div class="form-control">
+                <div class="input-group join">
+                    <input type="text" name="search_query" class="input input-bordered join-item" placeholder="Search suppliers" aria-label="Search suppliers" value="{{ request.GET.search_query|default:'' }}">
+                    <button type="submit" class="btn btn-square join-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </button>
+                </div>
+            </div>
+            <select name="sort_by" class="select select-bordered">
+                <option value="">Sort By</option>
+                <option value="name_asc" {% if request.GET.sort_by == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                <option value="name_desc" {% if request.GET.sort_by == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                <option value="quantity_high" {% if request.GET.sort_by == 'quantity_high' %}selected{% endif %}>Highest Quantity</option>
+                <option value="quantity_low" {% if request.GET.sort_by == 'quantity_low' %}selected{% endif %}>Lowest Quantity</option>
+            </select>
+            <select name="status_filter" class="select select-bordered">
+                <option value="">All Statuses</option>
+                <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                <option value="best_seller" {% if request.GET.status_filter == 'best_seller' %}selected{% endif %}>Best Seller</option>
+            </select>
+            <select name="quantity_filter" class="select select-bordered">
+                <option value="">All Quantities</option>
+                <option value="high" {% if request.GET.quantity_filter == 'high' %}selected{% endif %}>High (>1000)</option>
+                <option value="medium" {% if request.GET.quantity_filter == 'medium' %}selected{% endif %}>Medium (100-1000)</option>
+                <option value="low" {% if request.GET.quantity_filter == 'low' %}selected{% endif %}>Low (<100)</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </div>
+    </form>
+
+    <!-- Supplier List -->
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Highest Quantity Supplied</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in page_obj %}
+                <tr>
+                    <td>
+                        <a href="{% url 'supplier_detail' supplier.id %}" class="hover:text-primary dark:hover:text-primary-dark hover:font-bold hover:scale-105 transition-all duration-300 ease-in-out">
+                            {{ supplier.name }}
+                        </a>
+                    </td>
+                    <td>{{ supplier.email }}</td>
+                    <td>{{ supplier.phone }}</td>
+                    <td>{{ supplier.highest_quantity_supplied }}</td>
+                    <td>
+                        {% if supplier.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-error">Not Active</span>
+                        {% endif %}
+                        {% if supplier.is_best_seller %}
+                            <span class="badge badge-warning">Best Seller</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="dropdown dropdown-left">
+                            <label tabindex="0" class="btn btn-primary">Edit/Delete</label>
+                            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                <li><a onclick="openModal('updateModal{{ supplier.id }}')">Edit</a></li>
+                                <li><a onclick="openModal('deleteModal{{ supplier.id }}')">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'suppliers/controllers.html' %}
+    {% include 'suppliers/modals.html' %}
+</div>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('modal-open');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('modal-open');
+    }
+
+    function updateLastActive(supplierId) {
+        fetch(`/suppliers/supplier/${supplierId}/update-last-active/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the displayed last_active time
+                document.querySelector(`#lastActive${supplierId}`).textContent = new Date(data.last_active).toLocaleString();
+            }
+        });
+    }
+</script>
+{% endblock %}

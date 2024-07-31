@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-4xl font-bold">{{ supplier.name }}</h1>
+                <div class="flex space-x-2">
+                    <button class="btn btn-primary" onclick="openModal('updateModal')">Edit</button>
+                    <button class="btn btn-error" onclick="openModal('deleteModal')">Delete</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-1">
+                    <div class="card bg-base-200 shadow-xl">
+                        {% if supplier.image %}
+                        <figure class="px-6 pt-6">
+                            <img src="{{ supplier.image.url }}" alt="{{ supplier.name }}" class="rounded-xl w-full h-64 object-cover" />
+                        </figure>
+                        {% endif %}
+                        <div class="card-body">
+                            <h2 class="card-title">Contact Information</h2>
+                            <p><span class="font-bold">Email:</span> {{ supplier.email }}</p>
+                            <p><span class="font-bold">Phone:</span> {{ supplier.phone }}</p>
+                            <p><span class="font-bold">Address:</span> {{ supplier.address }}</p>
+                            {% if supplier.website %}
+                            <p><span class="font-bold">Website:</span> <a href="{{ supplier.website }}" target="_blank" class="link link-primary">Visit Website</a></p>
+                            {% endif %}
+                            <p><span class="font-bold">Last Active:</span> {{ supplier.last_active|date:"Y-m-d H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="card bg-base-200 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">Products Offered</h2>
+                            {% if supplier_products %}
+                                <div class="overflow-x-auto">
+                                    <table class="table table-zebra w-full">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Price</th>
+                                                <th>Category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in supplier_products %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'product_detail' product.id %}" class="hover:text-primary dark:hover:text-primary-dark hover:font-bold hover:scale-105 transition-all duration-300 ease-in-out">
+                                                            {{ product.name }}
+                                                        </a>
+                                                    </td>
+                                                    <td>${{ product.price }}</td>
+                                                    <td>{{ product.category.name }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-center text-lg">No products available for this supplier.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <a href="{% url 'supplier_list' %}" class="btn btn-primary">Back to Suppliers</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Supplier Modal -->
+    <div id="updateModal" class="modal z-[1000]">
+        <div class="modal-box">
+            <button onclick="closeModal('updateModal')" class="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+            <h3 class="font-bold text-lg">Update Supplier</h3>
+            <form id="updateForm" method="POST" action="{% url 'supplier_update' supplier.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include "suppliers/supplier_form_fields.html" with form=form %}
+                <div class="modal-action">
+                    <button id="updateButton" type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn" onclick="closeModal('updateModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Supplier Modal -->
+    <div id="deleteModal" class="modal z-[1000]">
+        <div class="modal-box">
+            <button onclick="closeModal('deleteModal')" class="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+            <h3 class="font-bold text-lg">Delete Supplier</h3>
+            <p class="py-4">Are you sure you want to delete {{ supplier.name }}? This action cannot be undone.</p>
+            <form id="deleteForm" method="POST" action="{% url 'supplier_delete' supplier.id %}">
+                {% csrf_token %}
+                <div class="modal-action">
+                    <button id="deleteButton" type="submit" class="btn btn-error">Delete</button>
+                    <button type="button" class="btn" onclick="closeModal('deleteModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function handleFormSubmit(formId, buttonId) {
+        const form = document.getElementById(formId);
+        const button = document.getElementById(buttonId);
+        const allButtons = document.querySelectorAll('button');
+    
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+    
+            if (button.disabled) return;
+    
+            allButtons.forEach(btn => btn.disabled = true);
+            button.disabled = true;
+            button.classList.add('btn-disabled');
+            button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+    
+            this.submit();
+        });
+      }
+
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('modal-open');
+}
+
+handleFormSubmit('updateForm', 'updateButton');
+handleFormSubmit('deleteForm', 'deleteButton');
+</script>
+
+{% endblock %}

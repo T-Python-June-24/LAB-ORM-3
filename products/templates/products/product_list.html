@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-base-100 text-base-content rounded-lg ">
+    <h1 class="text-3xl font-bold mb-6">Products</h1>
+
+    <!-- Search and Filter Form -->
+    <form method="get" class="mb-6" id="searchFilterForm">
+        <div class="flex flex-wrap gap-4">
+            <div class="form-control">
+                <div class="input-group join">
+                    <input type="text" name="search_query" class="input input-bordered join-item" placeholder="Search products" aria-label="Search products" value="{{ search_form.search_query.value|default_if_none:'' }}">
+                    <button type="submit" class="btn btn-square join-item" id="searchFilterSubmitBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </button>
+                </div>
+            </div>
+            <select name="category" class="select select-bordered">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if search_form.cleaned_data.category.id == category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="sort_by" class="select select-bordered">
+                <option value="">Sort By</option>
+                <option value="name_asc" {% if search_form.cleaned_data.sort_by == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                <option value="name_desc" {% if search_form.cleaned_data.sort_by == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                <option value="quantity_high" {% if search_form.cleaned_data.sort_by == 'quantity_high' %}selected{% endif %}>Quantity (High to Low)</option>
+                <option value="quantity_low" {% if search_form.cleaned_data.sort_by == 'quantity_low' %}selected{% endif %}>Quantity (Low to High)</option>
+                <option value="price_high" {% if search_form.cleaned_data.sort_by == 'price_high' %}selected{% endif %}>Price (High to Low)</option>
+                <option value="price_low" {% if search_form.cleaned_data.sort_by == 'price_low' %}selected{% endif %}>Price (Low to High)</option>
+                <option value="expiry" {% if search_form.cleaned_data.sort_by == 'expiry' %}selected{% endif %}>Expiry Date (Soonest)</option>
+            </select>
+            <select name="stock_status" class="select select-bordered">
+                <option value="">All Stock Status</option>
+                <option value="in_stock" {% if search_form.cleaned_data.stock_status == 'in_stock' %}selected{% endif %}>In Stock</option>
+                <option value="low_stock" {% if search_form.cleaned_data.stock_status == 'low_stock' %}selected{% endif %}>Low Stock</option>
+                <option value="out_of_stock" {% if search_form.cleaned_data.stock_status == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+            </select>
+            <button type="submit" class="btn btn-primary" id="searchFilterSubmitBtn">Apply Filters</button>
+        </div>
+    </form>
+
+    <!-- Product List -->
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Supplier</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><a href="{% url 'product_detail' product.id %}" class="hover:text-primary dark:hover:text-primary-dark hover:font-bold hover:scale-105 transition-all duration-300 ease-in-out">{{ product.name }}</a></td>
+                    <td>{{ product.category.name }}</td>
+                    <td>${{ product.price }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>
+                        {% if product.supplier %}
+                            <a href="{% url 'supplier_detail' product.supplier.id %}" class="hover:text-primary dark:hover:text-primary-dark hover:font-bold hover:scale-105 transition-all duration-300 ease-in-out">{{ product.supplier.name }}</a>
+                        {% else %}
+                            <span>-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1">
+                            {% with status=product.get_status %}
+                                {% if status.is_expired %}
+                                    <span class="badge badge-error badge-md">Expired</span>
+                                {% elif status.is_about_to_expire %}
+                                    <span class="badge badge-warning badge-md">Expiring Soon</span>
+                                {% endif %}
+                                {% if status.is_out_of_stock %}
+                                    <span class="badge badge-error badge-md">Out of Stock</span>
+                                {% elif status.is_low_stock %}
+                                    <span class="badge badge-warning badge-md whitespace-nowrap">Low Stock</span>
+                                {% else %}
+                                    <span class="badge badge-success badge-md whitespace-nowrap">In Stock</span>
+                                {% endif %}
+                                {% if status.is_best_seller %}
+                                    <span class="badge badge-success badge-md whitespace-nowrap">Best Seller</span>
+                                {% endif %}
+                                {% if status.is_new %}
+                                    <span class="badge badge-info badge-md">New</span>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="dropdown dropdown-left">
+                            <div tabindex="0" role="button" class="btn m-1 btn-primary">Edit/Delete</div>
+                            <ul
+                              tabindex="0"
+                              class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                            >
+                              <li>
+                                <button
+                                  onclick="openModal('updateModal{{ product.id }}')"
+                                >
+                                  Edit
+                                </button>
+                                </li>
+                              </li>
+                              <li>
+                                <button
+                                  onclick="openModal('deleteModal{{ product.id }}')"
+                                >
+                                  Delete
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include 'products/controllers.html' %}
+
+{% include 'products/modals.html' %}
+</div>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('modal-open');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('modal-open');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        handleFormSubmit('searchFilterForm', 'searchFilterSubmitBtn');
+        flatpickr("#expiry_date_create", {
+            dateFormat: "Y-m-d",
+        });
+
+        const updateModals = document.querySelectorAll('[id^="updateModal"]');
+        updateModals.forEach(modal => {
+            const productId = modal.id.replace('updateModal', '');
+            flatpickr(`#expiry_date_update_${productId}`, {
+                dateFormat: "Y-m-d",
+            });
+        });
+
+
+        function handleFormSubmit(formId, buttonId) {
+            const form = document.getElementById(formId);
+            const button = document.getElementById(buttonId);
+            const allButtons = document.querySelectorAll('button');
+        
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+        
+                if (button.disabled) return;
+        
+                allButtons.forEach(btn => btn.disabled = true);
+                button.disabled = true;
+                button.classList.add('btn-disabled');
+                button.innerHTML = '<span class="loading loading-spinner loading-sm"></span> <span class="text-neutral-content">Processing...</span>';
+        
+                this.submit();
+            });
+          }
+    
+    });
+
+
+</script>
+
+{% endblock %}
