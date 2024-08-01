@@ -1,0 +1,55 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    Categories
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center">Categories</h2>
+        <table class="table table-hover text-center">
+            <thead>
+            <tr class="table-primary">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">View</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if categories %}
+                {% for category in categories %}
+                    <tr class="table-active">
+                        <th scope="row">{{ category.id }}</th>
+                        <td>{{ category.name }}</td>
+                        <td>{{ category.description }}</td>
+                        <td>{{ category.date_created }}</td>
+                        <td><a href="{% url 'category:detail_view' category.id %}">View</a></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+        {% if categories_page.has_previous %}
+            <div class="d-flex gap-1">
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ categories_page.previous_page_number }}">&laquo; previous</a>
+            </div>
+        {% endif %}
+
+        <div class="current">
+            Page {{ categories_page.number }} of {{ categories_page.paginator.num_pages }}
+        </div>
+
+        {% if categories_page.has_next %}
+            <div class="d-flex gap-1">
+                <a href="?page={{ categories_page.next_page_number }}">next &raquo;</a>
+                <a href="?page={{ categories_page.paginator.num_pages }}">last &raquo;</a>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

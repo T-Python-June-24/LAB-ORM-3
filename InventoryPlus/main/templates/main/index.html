@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}
+    Inventory Manager
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1 class="text-center mt-4 display-1">Dashboard</h1>
+        <hr>
+    </header>
+    <main class="container dashboard">
+        <div class="container">
+            <h2 class="text-center">Products</h2>
+            <table class="table table-hover text-center">
+                <thead>
+                <tr class="table-primary">
+{#                    <th scope="col">ID</th>#}
+                    <th scope="col">Name</th>
+{#                    <th scope="col">Description</th>#}
+                    <th scope="col">Category</th>
+                    <th scope="col">Suppliers</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Need Restock</th>
+{#                    <th scope="col">Image</th>#}
+{#                    <th scope="col">Expiry Date</th>#}
+{#                    <th scope="col">Reorder Level</th>#}
+{#                    <th scope="col">Date Stocked</th>#}
+                    <th scope="col">View</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if products %}
+                    {% for product in products %}
+                        <tr class="table-active">
+{#                            <th scope="row">{{ product.id }}</th>#}
+                            <td>{{ product.name }}</td>
+{#                            <td>{{ product.description }}</td>#}
+                            <td>{{ product.category }}</td>
+                            <td>{% for supplier in product.suppliers.all %}{{ supplier.name }}<br>{% endfor %}</td>
+                            <td>{{ product.price }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{% if product.quantity <= product.reorder_level or product.is_expiry_date_less_than_30_days %}
+                            	Yes
+                                {% else %}
+                                No
+                            {% endif %} </td>
+{#                            <td><img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }} image">#}
+                            </td>
+{#                            <td>{{ product.expiry_date }}</td>#}
+{#                            <td>{{ product.reorder_level }}</td>#}
+{#                            <td>{{ product.date_created }}</td>#}
+                            <td><a href="{% url 'product:detail_view' product.id %}">View</a></td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <div class="container">
+            <h2 class="text-center">Suppliers</h2>
+            <table class="table table-hover text-center">
+                <thead>
+                <tr class="table-primary">
+{#                    <th scope="col">ID</th>#}
+                    <th scope="col">Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Website</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Logo</th>
+                    <th scope="col">In Partnership Since:</th>
+                    <th scope="col">View</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if suppliers %}
+                    {% for supplier in suppliers %}
+                        <tr class="table-active">
+{#                            <th scope="row">{{ supplier.id }}</th>#}
+                            <td>{{ supplier.name }}</td>
+                            <td>{{ supplier.address }}</td>
+                            <td>{{ supplier.phone_number }}</td>
+                            <td>{{ supplier.website }}</td>
+                            <td>{{ supplier.email }}</td>
+                            <td><img class="supplier-image" src="{{ supplier.logo.url }}" alt="{{ supplier.name }} image">
+                            </td>
+                            <td>{{ supplier.date_created }}</td>
+                            <td><a href="{% url 'supplier:detail_view' supplier.id %}">View</a></td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+{% endblock %}

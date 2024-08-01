@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    {{ category.name }}
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-around">
+
+        <div class="container col-4">
+            <h1>{{ category.name }}</h1>
+            <h4>Description</h4>
+            <p>{{ category.description }}</p>
+            <p>ID: {{ category.id }}</p>
+            <p>Created in: {{ category.date_created }}</p>
+        </div>
+        <div class="container col-2 d-flex flex-column justify-content-center gap-2">
+            <a href="{% url 'category:edit_view' category.id %}" class="btn btn-outline-info">Edit</a>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Delete
+            </button>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are You sure you want to delete {{ category.name }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="{% url 'category:delete_view' category.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

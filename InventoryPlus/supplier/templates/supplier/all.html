@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    Suppliers
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center">Suppliers</h2>
+        <table class="table table-hover text-center">
+            <thead>
+            <tr class="table-primary">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Website</th>
+                <th scope="col">Email</th>
+                <th scope="col">Logo</th>
+                <th scope="col">In Partnership Since:</th>
+                <th scope="col">View</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if suppliers %}
+                {% for supplier in suppliers %}
+                    <tr class="table-active">
+                        <th scope="row">{{ supplier.id }}</th>
+                        <td>{{ supplier.name }}</td>
+                        <td>{{ supplier.address }}</td>
+                        <td>{{ supplier.phone_number }}</td>
+                        <td>{{ supplier.website }}</td>
+                        <td>{{ supplier.email }}</td>
+                        <td><img class="supplier-image" src="{{ supplier.logo.url }}" alt="{{ supplier.name }} image">
+                        </td>
+                        <td>{{ supplier.date_created }}</td>
+                        <td><a href="{% url 'supplier:detail_view' supplier.id %}">View</a></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+        {% if suppliers_page.has_previous %}
+            <div class="d-flex gap-1">
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ suppliers_page.previous_page_number }}">&laquo; previous</a>
+            </div>
+        {% endif %}
+
+        <div class="current">
+            Page {{ suppliers_page.number }} of {{ suppliers_page.paginator.num_pages }}
+        </div>
+
+        {% if suppliers_page.has_next %}
+            <div class="d-flex gap-1">
+                <a href="?page={{ suppliers_page.next_page_number }}">next &raquo;</a>
+                <a href="?page={{ suppliers_page.paginator.num_pages }}">last &raquo;</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

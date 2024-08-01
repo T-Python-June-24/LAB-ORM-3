@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    Products
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center">Products</h2>
+        <table class="table table-hover text-center">
+            <thead>
+            <tr class="table-primary">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Suppliers</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Need Restock</th>
+                <th scope="col">Image</th>
+                <th scope="col">Expiry Date</th>
+                <th scope="col">Reorder Level</th>
+                <th scope="col">Date Stocked</th>
+                <th scope="col">View</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if products %}
+                {% for product in products %}
+                    <tr class="table-active">
+                        <th scope="row">{{ product.id }}</th>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{% for supplier in product.suppliers.all %}{{ supplier.name }}<br>{% endfor %}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>
+                            {% if product.quantity <= product.reorder_level or product.is_expiry_date_less_than_30_days %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %} </td>
+                        <td><img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }} image">
+                        </td>
+                        <td>{{ product.expiry_date }}</td>
+                        <td>{{ product.reorder_level }}</td>
+                        <td>{{ product.date_created }}</td>
+                        <td><a href="{% url 'product:detail_view' product.id %}">View</a></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+        {% if products_page.has_previous %}
+            <div class="d-flex gap-1">
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ products_page.previous_page_number }}">&laquo; previous</a>
+            </div>
+        {% endif %}
+
+        <div class="current">
+            Page {{ products_page.number }} of {{ products_page.paginator.num_pages }}
+        </div>
+
+        {% if products_page.has_next %}
+            <div class="d-flex gap-1">
+                <a href="?page={{ products_page.next_page_number }}">next &raquo;</a>
+                <a href="?page={{ products_page.paginator.num_pages }}">last &raquo;</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

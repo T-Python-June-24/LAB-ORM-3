@@ -1,0 +1,82 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    {{ supplier.name }}
+{% endblock %}
+{% block content %}
+    <div class="container d-flex justify-content-around">
+
+        <div class="container col-4">
+            <h1>{{ supplier.name }}</h1>
+            <div class="d-flex gap-2">
+                <h5>Address:</h5>
+                <p>{{ supplier.address }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>Phone Number:</h5>
+                <p>{{ supplier.phone_number }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>Website:</h5>
+                <p>{{ supplier.website }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>Email Address:</h5>
+                <p>{{ supplier.email }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>Products:</h5>
+                <ul>
+                    <li>{% for product in products %}{{ product.name }}</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>ID:</h5>
+                <p>{{ supplier.id }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <h5>In Partnership Since:</h5>
+                <p>{{ supplier.date_created }}</p>
+            </div>
+        </div>
+    <div class="container col-4"><img class="w-75" src="{{ supplier.logo.url }}" alt="{{ supplier.name }} image"></div>
+    <div class="container col-2 d-flex flex-column justify-content-center gap-2">
+        <a href="{% url 'supplier:edit_view' supplier.id %}" class="btn btn-outline-info">Edit</a>
+        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+            Delete
+        </button>
+    </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Supplier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are You sure you want to delete {{ supplier.name }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="{% url 'supplier:delete_view' supplier.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#    <div class="container d-flex flex-column gap-2">#}
+    {##}
+    {#        <h1>{{ supplier.name }}</h1>#}
+    {#        <div class="d-flex flex-column gap-2">#}
+    {#            <img class="supplier-logo w-100" src="{{ supplier.logo.url }}"/>#}
+    {#            <h1>{{ supplier.name }}</h1>#}
+    {#        </div>#}
+    {#        <h2>Info:</h2>#}
+    {#        <p>{{ supplier.address }}</p>#}
+    {#        <p>{{ supplier.phone_number }}</p>#}
+    {#        <p>{{ supplier.website }}</p>#}
+    {#        <p>{{ supplier.email }}</p>#}
+    {#    </div>#}
+{% endblock %}

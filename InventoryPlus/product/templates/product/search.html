@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block title %}
+    Product Search
+{% endblock %}
+{% block content %}
+    <header class="container col-12 d-flex justify-content-center align-items-center">
+        <h2 class="col-4 mt-4 ">Search: {{ request.GET.search }}</h2>
+        <form class="col-2 mt-4" method="get" action="{% url 'product:search_view' %}">
+            <input class="form-control me-sm-2" type="search" placeholder="Search" name="search">
+        </form>
+        <hr>
+    </header>
+{% endblock %}

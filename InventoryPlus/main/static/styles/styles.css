@@ -1,0 +1,14 @@
+.dashboard {
+    border: 4px solid orange;
+    border-radius: 10px;
+    width: 75%;
+    height: 75%;
+}
+.product-image {
+    width: 50px;
+    height: 50px;
+}
+.supplier-image {
+    width: 50px;
+    height: 50px;
+}

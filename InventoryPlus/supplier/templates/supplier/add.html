@@ -1,0 +1,16 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}
+	Add Supplier
+{% endblock %}
+{% block content %}
+	<div class="container mt-4 mb-4 col-6">
+        <h1>Add Supplier</h1>
+        <form method="post" action="{% url 'supplier:add_view' %}">
+            {% csrf_token %}
+            {{ supplier_form|crispy }}
+            <input type="submit" value="Add Supplier" class="btn btn-outline-primary">
+        </form>
+    </div>
+{% endblock %}
