@@ -7,6 +7,7 @@ import csv
 from .forms import CSVUploadForm
 from django.contrib import messages
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator
 
 
 
@@ -48,16 +49,34 @@ def all_products_view(request:HttpRequest, type, product_param):
     # else:
     #     products = []
 
+    
+    
+
     if product_param == "all":
         products = Product.objects.all().order_by("-expiry_date")
-        return render(request, "products/all_products.html", {"products":products, "product_param":product_param, 'type':type})
+
+        page_number = request.GET.get('page',1)
+        paginator = Paginator(products,6)
+        products_page = paginator.get_page(page_number)
+        return render(request, "products/all_products.html", {"products":products_page, "product_param":product_param, 'type':type})
+    
     elif type =="category_name":
         products = Product.objects.filter(category__name = product_param).order_by("-expiry_date")
-        return render(request, "products/all_products.html", {"products":products, "product_param":product_param, 'type':type})
+
+        page_number = request.GET.get('page',1)
+        paginator = Paginator(products,6)
+        products_page = paginator.get_page(page_number)
+        return render(request, "products/all_products.html", {"products":products_page, "product_param":product_param, 'type':type})
+    
     elif type == "supplier_id":
         products = Product.objects.filter(suppliers__id__in=[product_param]).order_by("-expiry_date")
         supplier  = Supplier.objects.get(pk=product_param)
-        return render(request, "products/all_products.html", {"products":products, "product_param":product_param, 'type':type, 'supplier':supplier})
+
+        page_number = request.GET.get('page',1)
+        paginator = Paginator(products,6)
+        products_page = paginator.get_page(page_number)
+        return render(request, "products/all_products.html", {"products":products_page, "product_param":product_param, 'type':type, 'supplier':supplier})
+    
     
 
 
