@@ -1,0 +1,116 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+
+<div id="content" class="bg-white/10 col-span-9 rounded-lg p-6">
+    <div class="min-h-screen  py-6 flex flex-col justify-center sm:py-12">
+        <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+            <div class="relative px-4 py-10 bg-white/20 mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+                <div class="max-w-md mx-auto">
+                    <div class="flex items-center space-x-5">
+                        <div
+                            class="h-14 w-14 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">i</div>
+                        <div class="block pl-2 font-semibold text-xl self-start text-gray-700">
+                            <h2 class="leading-relaxed text-white">Add Product</h2>
+                            <p class="text-sm text-gray-400 font-normal leading-relaxed ">Accurate product information is essential. Please review carefully before submitting.</p>
+                            
+                        </div>
+                    </div>
+                    <div class="divide-y divide-gray-200">
+                        <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                            <div class="flex flex-col">
+                                <form method="post" enctype="multipart/form-data" action="{% url 'products:import_data' %}">
+                                    {% csrf_token %}
+                                    
+
+
+                            <div>
+                                <h2 class="text-white mb-5">Upload CSV <span class="text-gray-400 text-sm">(optional)</span></h2>
+                                
+                            </div>
+                            <div class="flex w-full items-center justify-center bg-grey-lighter">
+                                
+                                <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-gray-800">
+                                    <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                    </svg>
+                                    <span class="mt-2 text-base leading-normal">Select a file</span>
+                                    <input type='file' name="file" class="hidden" />
+                                    <div class="bg-black/20 rounded-lg py-1 place-self-center mt-1 hover:bg-black/30 duration-200 text-center w-24  "><input type="submit" value="upload" class="text-sm cursor-pointer hover:scale-105 duration-200 "></div>
+                                </label>
+                                
+                            </div>
+                                                            </form> 
+
+                            </div>
+                            <div class="flex flex-col">
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                <label class="leading-loose text-white">Product Name</label>
+                                <input type="text" 
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    placeholder="Product Name" name="name">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Category</label>
+                                <select name="category" id="" >
+                                    <option value="">Choose Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{category.id}}">{{category.name}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Supplier</label>
+                                <select multiple name="supplier" id="suppliers" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                    {% for supplier in suppliers %}
+                                    <option value="{{supplier.id}}">{{supplier.name}}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Number Of Items</label>
+                                <input type="number" name="stock_level" required
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    placeholder="Number of items">
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Price</label>
+                                <input type="number" name="price" required
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    placeholder="$">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Expirment Date</label>
+                                <input type="date" name="expirment_date"
+                                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                    placeholder="Optional">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="leading-loose text-white">Description</label>
+                                <textarea name="description" id="" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Write description about your product" ></textarea>
+
+
+                        </div>
+                        
+                        <div class="pt-4 flex items-center space-x-4">
+                            <button
+                                class="bg-indigo-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Create</button>
+                        </div>
+                    </form>
+                    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+                    <script>
+                        
+                        new MultiSelectTag("suppliers")
+                    </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

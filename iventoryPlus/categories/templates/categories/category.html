@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div id="content" class="bg-white/10 col-span-9 rounded-lg p-6 ">
+  {% include 'main/searchComponent.html' %}
+  <div class="flex flex-row justify-between items-center mt-2 ">
+    <h1 class="font-bold py-4 uppercase">All Categories</h1>
+    <a href="{% url 'categories:add_category' %}"><Button class="text-indigo-400 bg-white/10 rounded-md p-2 hover:scale-105 hover:ease-linear duration-200 hover:text-indigo-500">Add Category</Button></a>
+</div>
+
+{% include 'categories/category_list.html' with categories=categories %}
+  
+  <!-- stylesheet -->
+
+</div>
+{% endblock %}

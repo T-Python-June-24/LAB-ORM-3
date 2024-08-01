@@ -1,0 +1,61 @@
+<div class="flex flex-row flex-wrap   gap-4">
+    
+    {% for category in categories %}
+    <div class="relative mt-6 flex w-64 h-40 flex-col rounded-xl bg-black/60 to-white/5 bg-clip-border text-gray-700 shadow-md">
+      
+      <div class="p-4 ">
+        <div class="flex flex-row justify-between">
+          <span class="material-symbols-outlined text-5xl text-indigo-500 to-indigo-950">
+            category
+            </span>
+            <div>
+              <a href="{% url 'categories:delete_category' category.id %}">
+                <span class="material-symbols-outlined hover:ease-linear hover:text-gray-500  duration-150 hover:scale-125 ">
+                  delete
+                  </span>
+              </a>
+                <a href="{% url 'categories:update_category' category.id %}">
+                  <span class="material-symbols-outlined hover:ease-linear hover:text-gray-500  duration-150 hover:scale-125 ">
+                    edit
+                    </span>
+                </a>
+            </div>
+        </div>
+        <h5 class=" block font-sans text-xl font-semibold leading-snug tracking-normal text-gray-200 antialiased">
+          {{category.name}}
+        </h5>
+      </div>
+      <div class="p-6 pt-0">
+        <a
+          class="!font-medium !text-blue-gray-900 !transition-colors   "
+          href="{% url 'categories:related_products' category.id %}"
+        >
+          <button
+            class="hover:scale-110 hover:duration-200 hover:ease-linear flex select-none items-center gap-2 rounded-lg  px-4 text-center align-middle font-sans text-xs font-bold p-1 uppercase text-indigo-400 bg-gray-400/15  transition-all  py-2 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            type="button"
+            data-ripple-dark="true">
+            related product 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              aria-hidden="true"
+              class="h-4 w-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+              ></path>
+            </svg>
+          </button>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+    
+      
+    
+    </div>

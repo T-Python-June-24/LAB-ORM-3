@@ -1,0 +1,49 @@
+<div class="overflow-x-scroll overflow-y-scroll h-96">
+    <table class="w-full whitespace-nowrap">
+        <thead class="bg-black/60 ">
+            <th class="text-left py-3 px-2 rounded-l-lg">Product Name</th>
+            <th class="text-left py-3 px-2">Category</th>
+            <th class="text-left py-3 px-2">Supplier</th>
+            <th class="text-left py-3 px-2">Expirment</th>
+            <th class="text-left py-3 px-2">Added At</th>
+            <th class="text-left py-3 px-2">Stock Level</th>
+            <th class="text-left py-3 px-2 rounded-r-lg">Actions</th>
+        </thead>  
+        {% for product in products %}
+        <tr class="border-b border-gray-800">
+            <td class="py-3 px-2 font-bold">
+                <div class="inline-flex space-x-3 items-center">
+                    <span>{{product.name}}</span>
+                </div>
+            </td>
+            <td class="py-3 px-2">{{product.category}}</td>
+            <td class="py-3 px-2 flex flex-col justify-center items-center gap-1">
+                {% for supplier in product.supplier.all %}
+
+                <p class="text-xs  p-1 rounded-md "><img class="w-12" src="{{supplier.logo.url}}" alt=""></p>
+                {% endfor %}
+            </td>
+            <td class="py-3 px-2">{{product.expirment}}</td>
+            <td class="py-3 px-2">{{product.added}}</td>
+            <td {% if product.stock_level <= 10 %} class="py-3 px-2 text-red-700" {% else %} class="py-3 px-2 text-green-700" {% endif %}>{{product.stock_level}} items</td>
+            <td class="py-3 px-2">
+                <div class="flex flex-row items-center space-x-3 justify-center">
+                    <a href="{% url 'products:update_product' product.id %}?next={{ request.path }}" title="Edit" class="hover:text-white">
+                        <span class="material-symbols-outlined">
+                            edit
+                            </span>
+                      </a>
+                    
+                    <a href="{% url 'products:delete_product' product.id %}?next={{ request.path }}" title="Delete product" class="hover:text-white">
+                        <span class="material-symbols-outlined">
+                            delete
+                            </span>
+                      </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+
+        
+    </table>
+</div>

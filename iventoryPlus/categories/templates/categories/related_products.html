@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block content  %}
+<div id="content" class="bg-white/10 col-span-9 rounded-lg p-6">
+    <div>
+        
+        <h2 class="text-2xl mb-10">{{category.name}} Product</h2>
+        {% include 'products/product_list.html' with products=products %}
+    </div>
+</div>
+{% endblock %}

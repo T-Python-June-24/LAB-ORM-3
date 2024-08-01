@@ -1,0 +1,19 @@
+<!-- templates/your_app_name/import.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Data</title>
+</head>
+<body>
+    <h1>Import Data</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" />
+        <button type="submit">Upload CSV</button>
+    </form>
+    <a href="{% url 'products:export_data' %}" class="btn btn-primary">Export Products</a>
+</body>
+</html>

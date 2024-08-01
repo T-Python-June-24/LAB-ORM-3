@@ -1,0 +1,118 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<div id="content" class="bg-white/10 col-span-9 rounded-lg p-6">
+    <div>
+        {% include 'main/searchComponent.html' %}
+    </div>
+   <div class="mt-5">
+    <h1 class="text-2xl font-bold">Suppliers Reports</h1>
+    
+    
+    <script>
+      var supplierNames = [];
+      var supplierProducts=[];
+  </script>
+  
+  {% for supplier in suppliers %}
+      <script>
+          supplierNames.push('{{ supplier.name }}');
+      </script>
+  {% endfor %}
+  {% for num in No_products %}
+  <script>
+      supplierProducts.push('{{ num }}');
+  </script>
+{% endfor %}
+    <canvas id="myChart">  
+        <script>
+            const ctx = document.getElementById('myChart');
+          
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                barPercentage: 0.5,
+                barThickness: 6,
+                maxBarThickness: 8,
+                minBarLength: 2,
+                labels: supplierNames,
+                datasets: [{
+                  label: '# of Products',
+                  data: supplierProducts,
+                  borderWidth: 2
+                }]
+              },
+              options: {
+                    indexAxis: 'y',
+                    
+                    }
+            });
+          </script>
+    </canvas>
+  
+
+
+
+   </div>
+   <div class="mt-16">
+    <h2 class="text-2xl font-bold">Products Reports</h2>
+    
+    <script>
+      var products_name = [];
+      var products_items=[];
+  </script>
+  
+  {% for product in products %}
+      <script>
+          products_name.push('{{ product.name }}');
+          products_items.push('{{ product.stock_level }}');
+      </script>
+  {% endfor %}
+ 
+<div class="w-2/3 flex flex-col justify-center items-center ml-36 lg:ml-36 sm:ml-24 sm:w-2/4">
+    <canvas id="myCharts" >  
+        <script>
+          
+            const ctxs = document.getElementById('myCharts');
+          
+            new Chart(ctxs, {
+              type: 'pie',
+              data: {
+                labels: products_name,
+                datasets: [{
+                  label: '# of Items',
+                  data: products_items,
+                  borderWidth: 2,
+                  backgroundColor:  
+ [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 206, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(153, 102, 255)',
+      'rgb(255, 159, 64)'
+    ],
+    borderColor: [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 206, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(153, 102, 255)',
+      'rgb(255, 159, 64)'
+    ],
+                }]
+              },
+              options: {
+                    indexAxis: 'y',
+                    
+                    }
+            });
+          </script>
+    </canvas>
+  </div>
+  
+
+   </div>
+</div>
+
+{% endblock %}

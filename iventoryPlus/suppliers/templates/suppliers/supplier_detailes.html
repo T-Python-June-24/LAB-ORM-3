@@ -1,0 +1,123 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="content" class="bg-white/10 col-span-9 rounded-lg p-6 ">
+    <div><img class="w-52 mb-10" src="{{supplier.logo.url}}" alt=""></div>
+
+    <div class="flex flex-row gap-4 w-fit flex-wrap ">
+        
+        <div class="bg-black/60 p-6 rounded-lg">
+            <div class="flex flex-row space-x-4 items-center">
+                <div id="stats-1">
+                    <span class="material-symbols-outlined text-4xl">
+                        mail
+                        </span>
+                      
+                </div>
+                <div>
+                    <p class="text-teal-300 text-sm font-medium uppercase leading-4">Email</p>
+                    <p class="text-white font-bold text-xl inline-flex items-center space-x-2">
+                        <a href="mailto:{{supplier.email}}"  class="hover:text-blue-600 duration-200">{{supplier.email}}</a>
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-black/60 p-6 rounded-lg">
+            <div class="flex flex-row space-x-4 items-center">
+                <div id="stats-1">
+                    <span class="material-symbols-outlined text-4xl">
+                        link
+                        </span>
+                      
+                </div>
+                <div>
+                    <p class="text-teal-300 text-sm font-medium uppercase leading-4 ">Website</p>
+                    <p class="text-white font-bold text-xl inline-flex items-center space-x-2">
+                        <a href="mailto:{{supplier.email}}" class="hover:text-blue-600 duration-200">{{supplier.website}}</a>
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-black/60 p-6 rounded-lg ">
+            <div class="flex flex-row space-x-4 items-center">
+                <div id="stats-1">
+                    <span class="material-symbols-outlined text-4xl">
+                        public
+                        </span>
+                      
+                </div>
+                <div>
+                    <p class="text-teal-300 text-sm font-medium uppercase leading-4 ">Country</p>
+                    <p class="text-white font-bold text-xl inline-flex items-center space-x-2">
+                        <a href="mailto:{{supplier.email}}" class="hover:text-blue-600 duration-200">{{supplier.country}}</a>
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div>
+            
+<!--  -->
+<script defer src="https://unpkg.com/alpinejs@3.2.4/dist/cdn.min.js"></script>    
+
+<div class="mt-5">
+    <h2 class="text-2xl font-bold text-white">Supplier Contribution Percentage</h2>
+<main class="grid w-fit  text-gray-100  place-content-center ml-60 mt-10 ">
+    
+
+    <section x-data="skillDisplay"
+        class="p-6 space-y-6  rounded-xl md:grid md:grid-cols-2 md:gap-4 sm:space-y-0 ">
+
+        <div class="flex items-center justify-center " x-data="{ circumference: 2 * 22 / 7 * 120 }">
+            <svg class="transform -rotate-90 w-72 h-72">
+                <circle cx="145" cy="145" r="120" stroke="currentColor" stroke-width="30" fill="transparent"
+                    class="text-gray-700 flex " />
+
+                <circle cx="145" cy="145" r="120" stroke="currentColor" stroke-width="30" fill="transparent"
+                    :stroke-dasharray="circumference"
+                    :stroke-dashoffset="circumference - currentSkill.percent / 100 * circumference"
+                    class="text-indigo-500 " />
+            </svg>
+            <span class="absolute text-5xl" x-text="`${currentSkill.percent}%` "></span>
+    </section>
+</main></div>
+
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('skillDisplay', () => ({
+            skills: [{
+                    'title': 'HTML',
+                    'percent': '100',
+                },
+             
+            ],
+            currentSkill: {
+                'title': 'HTML',
+                'percent': '{{supplier_percentage}}',
+            }
+        }));
+    });
+</script>
+<!--  -->
+<!-- supplier product -->
+{% if products %} 
+<div>
+    <h2 class="text-2xl font-bold mb-10">Supplier Products</h2>
+    {% include 'products/product_list.html' with products=products %}
+ </div>
+ {% endif %}
+
+
+        </div>
+    
+
+
+    </div>
+</div>
+
+
+{% endblock %}

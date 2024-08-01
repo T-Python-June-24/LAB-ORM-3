@@ -1,0 +1,14 @@
+<div class="bg-black/60 w-2/3  rounded-md">
+    <form action="{% url 'main:search_view' %}" method="get">
+        <div class="flex flex-row bg-inherit ">
+            <input type="search" name="search" id="" class="bg-inherit border-none rounded-md w-full outline-none focus:ring-2 focus:ring-gray-500  " placeholder="Search about product , spplier or category" value="{{request.GET.search}}" >
+            <select class="bg-inherit  border-none rounded-md text-white/60 outline-none focus:ring-2 focus:ring-gray-500 !important w-20 " name="filter" id="">
+                
+                <option value="all" class="text-white/80 bg-black/60" {% if request.GET.filter == 'all' %} selected {% endif %}>All</option>
+                <option value="product" class="text-white/80 bg-black/60" {% if request.GET.filter == 'product' %} selected {% endif %}>product</option>
+                <option value="supplier" class="text-white/80 bg-black/60" {% if request.GET.filter == 'supplier' %} selected {% endif %}>supplier</option>
+                <option value="category" class="text-white/80 bg-black/60" {% if request.GET.filter == 'category' %} selected {% endif %}>category</option>
+            </select>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,36 @@
+    
+<div id="stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    
+    {% for supplier in suppliers %}
+    <div class="bg-black/60 to-white/5 rounded-lg">
+            <div class="flex flex-col items-center justify-center ">
+                <div class="h-40 flex justify-center items-center"><img class="w-36 mb-2 rounded-md pt-6" src="{{supplier.logo.url}}" alt=""></div>
+                <div class="pb-6 flex flex-col justify-center items-center">
+                    <p class="text-xl font-bold text-center hover:scale-110 duration-200 hover:text-gray-200 "><a href="{% url 'suppliers:supplier_detailes' supplier.id %}">{{supplier.name}}</a></p>
+                    <a href=""><p class=" text-sm text-blue-700 ">{{supplier.website}}</p></a>
+                    <p class=" text-xs text-green-300">{{supplier.percentage}}% of our products</p>
+                    
+                </div>
+            </div> 
+            <div class="border-t border-white/5 p-2 flex flex-row justify-between items-center ">
+                <a href="{% url 'suppliers:supplier_detailes' supplier.id %}" class=" bg-white/20 p-1 inline-flex space-x-2 items-center text-center  rounded-md  hover:scale-105 hover:ease duration-200 ">
+                    <span class="material-symbols-outlined">
+                        info
+                        </span>
+                      <span class="text-white  text-sm">View detailes</span>                                      
+                </a>
+                <div class="flex flex-row gap-1 ">
+                   <a href="{% url 'suppliers:delete_supplier' supplier.id %}?next={{ request.path }}"> <span class="material-symbols-outlined hover:scale-105 hover:ease-linear hover:text-red-500 duration-200">
+                    delete
+                    </span></a>
+                        <a href="{% url 'suppliers:update_supplier' supplier.id %}?next={{ request.path }}"><span class="material-symbols-outlined  hover:scale-105 hover:ease-linear hover:text-indigo-500 duration-200">
+                            edit
+                            </span></a>
+                </div>
+            </div>
+    </div>
+    {% endfor %}
+    
+    
+   
+</div>
