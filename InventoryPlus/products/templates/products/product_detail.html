@@ -1,0 +1,59 @@
+
+{% extends 'main/base.html' %}
+
+
+{% block title %}Product Details{% endblock %}
+
+{% block content %}
+<h2>{{product.product_name}}</h2>
+
+<div class="row">
+    <div class="col">
+        <div class="d-flex flex-column gap-2 ">
+            <div class=" d-flex gap-5">
+                  <a href="{% url 'products:all_products_view' 'category_name' product.category.name %}"><h6 class="cat p-1 ps-3 pe-3  rounded-pill text-white {{product.category.name}}">{{ product.category.name }}</h6></a>
+                  <h6>{{product.expiry_date}}</h6>
+            </div>
+            <div class="d-flex align-items-center gap-1 ">
+              {% for supplier in product.suppliers.all %}
+              <a href="{% url 'products:all_products_view' 'supplier_id' supplier.id %}"><img src="{{ supplier.logo.url }}" class="rounded-circle overflow-hidden supplier-logo-small" /></a>
+              {% endfor %}
+          </div>
+          <div class="d-flex">
+            <img src="{{ product.image.url }}" class="product-img bg-black"/>
+          </div>
+              <h5>{{product.stock_level}} Pieces</h5>
+            <div class="d-flex justify-content-start gap-2 mt-4">
+                <a href="{% url 'products:update_product_view' product.id %}" class="btn sky-bg"><span class="material-symbols-outlined">edit</span></a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="material-symbols-outlined">delete</span></button>
+            </div>
+            <p>{{ product.description }}</p>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are You sure you want to delete {{product.product_name}} ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="{% url 'products:delete_product_view' product.id %}" class="btn btn-danger">delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

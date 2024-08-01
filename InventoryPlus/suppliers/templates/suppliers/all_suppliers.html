@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% block title %}All Suppliers{% endblock %}
+
+{% block content %}
+
+<h2>All Suppliers</h2>
+
+
+<div class="row mt-2 row-cols-1 row-cols-md-3 g-4">
+
+    {% for supplier in suppliers %}
+      <div class="col">
+          <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <div class="d-flex gap-2">
+                    <a href="{% url 'suppliers:supplier_detail_view' supplier.id %}"><img src="{{ supplier.logo.url }}" class="rounded-circle overflow-hidden supplier-logo-small" /></a>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <h6  class="m-0 p-0">{{supplier.supplier_name}} </h6>
+                </div>
+            </div>
+
+           
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <h6 class="m-0 p-0 text-primary">{{supplier.email}}</h6>
+                <h6 class="m-0 p-0">{{supplier.phone}}</h6>
+            </div>
+
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% endblock %}

@@ -1,0 +1,215 @@
+
+* {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1 {
+    font-size: 3rem;
+    
+}
+h1, h2,h5 {
+    font-family: "Bungee", sans-serif;
+    color: #0a739a;
+}
+
+
+
+.sky-bg{
+    background-color: #08a9e2;
+    color: white;
+}
+.sky-bg:hover{
+    background-color: #08a9e2;
+    color: white;
+}
+
+.navbar-brand h2 {
+    font-family: "Odibee Sans", sans-serif;
+}
+
+main {
+    min-height: 60vh;
+}
+
+body.dark  {
+    background-color: rgb(40, 40, 40);
+    color: rgb(220, 220, 220);
+}
+
+body.dark h1, body.dark h2, body.dark h3 {
+    color:rgb(255, 179, 0);
+} 
+
+
+body.dark hr {
+    background-color: rgb(115, 115, 115);
+}
+
+.odibee-sans-regular {
+    font-family: "Odibee Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+
+.bungee-regular {
+    font-family: "Bungee", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+
+p {
+    white-space:pre-line;
+}
+
+hr {
+    opacity: 1;
+    height: 1rem;
+    border: none;
+    background-color: rgb(230, 230, 230);
+
+}
+
+.top-logo {
+    font-size: 2.2rem;
+    color: rgb(9, 35, 95);
+    transition: all 0.2s ease-in;
+    
+}
+
+/* .top-logo:hover {
+    transform: translate(5%, -5%) skewX(-20deg);
+    text-shadow: -0.2rem 0.1rem 0px rgb(218, 194, 12);
+} */
+
+.top-video {
+    /* transform: skewX(-20deg); */
+    transition: all 0.3s ease-in;
+}
+
+
+
+.top-video  {
+
+    background-color: orange;
+    padding-left: 4rem;
+}
+
+.vid-container video {
+    height: 100%;
+    max-height: 50vh;
+    margin-left: 0.4rem;
+}
+
+input[type="search"]{
+    border-radius: 0px !important;
+  
+}
+
+
+.top-nav span {
+    padding:0.2rem;
+
+}
+
+.top-nav .active-icon {
+    background-color: white;
+    border-radius: 50%;
+    color:black;
+}
+
+
+
+.top-nav a {
+    padding: 0px !important;
+}
+
+
+.poster-thumb {
+    height: 250px
+}
+
+.product-img{
+    height: 250px;
+    width: 250px;
+}
+
+a {
+    color:black;
+    text-decoration: none;
+    /* transition: all 0.1s ease-in; */
+}
+
+a:hover {
+    color:rgb(255, 179, 0);
+    transition: all 0.15s ease-out;
+}
+
+/* .cat {
+    background-color: rgb(120, 120, 120);
+} */
+
+.cat:hover {
+    background-color: #3e7205;
+}
+
+.Vitamins-Supplements {
+    background-color: rgb(227, 146, 6);
+}
+
+.Prescribed-Medication {
+    background-color: rgb(162, 11, 11);
+}
+
+.Hygiene{
+    background-color: rgb(41, 99, 192);
+}
+
+.OTC-Medication {
+    background-color: rgb(223, 17, 158);
+}
+
+.Alternative-Remedies {
+    background-color: rgb(39, 133, 48);
+}
+
+.Baby-Care {
+    background-color: rgb(50, 200, 16);
+}
+
+
+
+.supplier-img-top {
+    height: 150px;
+    object-fit:contain;
+    object-position: center;
+}
+
+.supplier-logo {
+    max-height: 300px;
+    object-fit: contain;
+}
+
+.supplier-logo-small {
+    height: 100px;
+    width:100px;
+    object-fit: contain;
+}
+
+.top-nav a.active {
+    background-color: rgb(4, 61, 102) !important;
+    border-radius: 10px;
+    padding: 2px 18px !important;
+}
+
+
+@media only screen and (max-width:800px)  {
+    .top_video {
+        transform: skewX(0deg);
+        transition: all 0.3s ease-in;
+    }
+}
+

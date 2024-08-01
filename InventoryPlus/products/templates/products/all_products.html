@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+
+{% block title %}All Products{% endblock %}
+
+{% block content %}
+
+{% if type == 'supplier_id' %}
+<h2>Products Supplied By {{supplier.supplier_name}}</h2>
+{% else %}
+<h2>{{product_param}} Products</h2>
+{% endif %}
+
+{% include 'products/products_list.html' %}
+
+{% endblock %}

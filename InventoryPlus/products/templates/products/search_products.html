@@ -1,0 +1,34 @@
+
+{% extends 'main/base.html' %}
+
+
+{% block title %}Search Product{% endblock %}
+
+{% block content %}
+{% if products %}
+<h1>Search Results ({{products.count}})</h1>
+<h5>results for: {{request.GET.search}}</h5>
+<div class="d-flex justify-content-end">
+    <form action="{% url 'products:search_products_view' %}" method="GET" >
+
+        <div class="d-flex gap-3 h-100">
+            <input type="search" class="form-control" value="{{request.GET.search}}" name="search" required />
+            <select name="order_by" class="form-select">
+                <option value="">Order By</option>
+                <option value="stock_level" {% if request.GET.order_by == 'stock_level'%} selected {% endif %}>By Stock Level</option>
+                <option value="expiry_date" {% if request.GET.order_by == 'expiry_date'%} selected {% endif %}>By Expiry Date</option>
+            </select>
+    
+            <input type="submit" value="apply" class="btn sky-bg"/>
+        </div>
+
+    </form>
+</div>
+
+{% else %}
+<p class="bg-warning p-3 rounded">No results found for your search "{{request.GET.search}}"</p>
+{% endif %}
+
+{% include 'products/products_list.html' %}
+
+{% endblock %}

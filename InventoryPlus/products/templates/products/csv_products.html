@@ -1,0 +1,34 @@
+
+{% extends 'main/base.html' %}
+
+{% block title %} Inventory Plus {% endblock %}
+
+{% block content %}
+
+
+
+<div class="row mt-2 row-cols-1 row-cols-md-3 g-4">
+
+<div class="col bg-light" >
+    <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex align-items-center gap-1 ">
+                <a href="#"><img src="static/images/import_csv.png" class="rounded-circle  overflow-hidden supplier-logo-small" /></a>
+            </div>
+            <h5 class="text-primary">PRODUCTS</h5>
+            <a href="{% url 'products:import_products_csv_view' %}" class="btn sky-bg">Report</a>
+            <form action="{% url 'products:import_products_csv_view' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+               {{ form.as_p }} 
+              <button type="submit">Upload and Import</button>
+          </form>
+        </div>
+      </div>
+  </div>  
+</div>
+
+
+
+
+
+{% endblock %}

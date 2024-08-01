@@ -1,0 +1,87 @@
+
+<style>
+    h3, h4, h5 {
+    font-family: "Bungee", sans-serif;
+    color: #0a739a;
+    }
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid black ;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    td {
+        vertical-align: top;
+    }
+
+    .supplier-logo-small {
+        width: 50px;
+        height: 50px;
+        
+    }
+    .logo {
+        width: 150px;
+        height: 250px;
+        border-radius:50%;
+        object-fit:contain;
+    
+    }
+    .report_header{
+        display: flex;
+       justify-content: space-between;
+       align-items: center;
+    }
+    .table-titles th, td{
+        text-align: center;
+    }
+
+</style>
+<div class="report_header">
+    <div>
+        <h3>Subject: Products Report</h3>
+        <h4>Date: {{ current_date }}</h4>      
+    </div>    
+    <img class="logo" src="http://127.0.0.1:8000/static/images/inventory_plus.png"/>
+</div>
+
+<table>
+    <thead>
+        <tr class="table-titles">
+            <th>No.</th> <!-- New column header for sequence number -->
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Stock Level</th>
+            <th>Expiry Date</th>
+            <th>Suppliers</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody >
+        {% for product in products %}
+        <tr>
+            <td>{{ forloop.counter }}</td> <!-- forloop.counter to get the row number -->
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.stock_level }}</td>
+            <td>{{ product.expiry_date }}</td>
+            <td>{% for supplier in product.suppliers.all %}
+            {{ supplier.supplier_name }}
+            {% endfor %}</td>
+            <td><img class="supplier-logo-small" src="http://127.0.0.1:8000/{{ product.image.url }}" alt="{{ product.product_name }} logo"/></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No suppliers found.</td> <!-- Adjust colspan to match number of columns -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+ 
