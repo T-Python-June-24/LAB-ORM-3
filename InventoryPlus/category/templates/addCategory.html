@@ -1,0 +1,220 @@
+{% extends 'base.html' %} {% block title %} Add Category {% endblock %} 
+{% block content %}
+<div class="col py-3">
+  <h1>Add Category</h1>
+  <form
+    action="{% url 'category:add_Category_view' %}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <div class="row mb-4">
+      <div class="col">
+        <div data-mdb-input-init class="form-outline">
+          <input
+            type="text"
+            name="name"
+            id="categoryName"
+            class="form-control"
+            required
+          />
+          <label class="form-label" for="categoryName">Category name</label>
+        </div>
+      </div>
+    </div>
+    <div data-mdb-input-init class="form-outline mb-4">
+      <textarea
+        class="form-control"
+        name="description"
+        id="description"
+        rows="4"
+        required
+      ></textarea>
+      <label class="form-label" for="description">Description</label>
+    </div>
+    <button
+      data-mdb-ripple-init
+      type="submit"
+      class="btn btn-primary btn-block mb-4"
+    >
+      Add Category
+    </button>
+  </form>
+  <a
+    class="btn btn-secondary btn-block"
+    href="{% url 'category:all_Categories_view'%}"
+  >
+    Back</a
+  >
+
+  <div class="col py-3">
+    <h1>Available Categories</h1>
+
+    <table class="table table-bordered">
+      <tr class="bg-info text-white">
+        <td>NO.</td>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Description</td>
+        <td>Actions</td>
+      </tr>
+      {%for category in categories %}
+      <tr class="text-center">
+        <td>{{forloop.counter}}</td>
+        <td>{{category.id}}</td>
+        <td>{{category.name}}</td>
+
+        <td>{{category.description}}</td>
+
+        <td>
+          <button
+            type="button"
+            class="btn btn-success"
+            data-mdb-ripple-init
+            data-mdb-modal-init
+            data-mdb-target="#updateModal{{category.id}}"
+            data-mdb-whatever="@fat"
+          >
+            Update
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal{{ category.id }}"
+          >
+            Delete
+          </button>
+        </td>
+        <div
+          class="modal fade"
+          id="deleteModal{{ category.id }}"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <!-- delete modal -->
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  Delete Category
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  Are you sure you want to delete the
+                  <strong>
+                    Category: {{category.name}} ID: {{ category.id }}</strong
+                  >?
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <a
+                  href="{% url 'category:delete_Category_view' category.id %}"
+                  class="btn btn-danger"
+                  >Delete</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Update modal -->
+        <div
+          class="modal fade"
+          id="updateModal{{ category.id }}"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Update Category {{category.name}}
+                </h5>
+
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-mdb-ripple-init
+                  data-mdb-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form
+                  id="updateForm{{ category.id }}"
+                  action="{% url 'category:update_Category_view' category.id %}"
+                  method="post"
+                >
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="recipient-name" class="col-form-label"
+                      >Category name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="recipient-name"
+                      name="name"
+                      value="{{category.name}}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="message-text" class="col-form-label"
+                      >Description:</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="message-text"
+                      name="description"
+                      required
+                    >
+ {{category.description}}  </textarea
+                    >
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-mdb-ripple-init
+                  data-mdb-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  form="updateForm{{ category.id }}"
+                  data-mdb-ripple-init
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tr>
+
+      {%endfor%}
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<div class="col py-3">
+            <h1> Dashboard Overview</h1>
+            <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6 mb-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Products</h5>
+                        <p class="card-text">{{ total_products }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 mb-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Suppliers</h5>
+                        <p class="card-text">{{ total_suppliers }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 mb-4">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Inventory Items</h5>
+                        <p class="card-text">{{ total_inventory_items }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Stock </h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products_with_quantity %}
+                <tr>
+                    <th scope="row">{{ product.id }}</th>
+                    <td>
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                    class="object-fit-contain"
+                    height="150px"
+                    width="150px"
+                    />
+                    {% else %}
+                    <img
+                    src="/media/images/defualt.png"
+                    class="w-20 poster-thumb object-fit-contain"
+                    />
+                    {% endif %}
+                </td>
+                    <td>{{ product.name }}</td>
+                    {% if product.total_quantity%}
+                    <td>{{ product.total_quantity }}</td>
+                    {%else%}
+                    <td>Out of Stock</td>
+                    {%endif%}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
+        
+    </div>
+    <!-- <div style="display: flex; flex-direction: row;">
+        {% for product in products%}
+    <div class=" ">
+  <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+    {% if product.image %}
+        <img src="{{ product.image.url }}"
+          class="object-fit-contain"
+          height="150px"
+          width="150px"
+        />
+        {% else %}
+        <img
+          src="/media/images/defualt.png"
+          class="w-20 poster-thumb object-fit-contain"
+        />
+        {% endif %}
+    <a href="">
+      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+    </a>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{product.name}}</h5>
+    <p class="card-text">{{product.description}}</p>
+    <p class="card-text">$ {{product.price}}</p>
+  </div>
+</div> 
+{%endfor%}
+    </div> -->
+    </div>
+        
+
+{% endblock %}

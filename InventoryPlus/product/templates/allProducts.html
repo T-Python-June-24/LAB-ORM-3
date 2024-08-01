@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %} All Products {% endblock %}
+
+{% block content %}
+<div class="col py-3">
+            <h1> Products Management</h1>
+            <div class="m-4">
+                <a href="{% url 'product:add_products_view' %}" class="btn btn-primary">ADD Product +</a>
+            </div>
+  <table class="table table-bordered">
+    <tr class="bg-info text-white">
+      <td>ID</td>
+      <td>Product Name</td>
+      <td>Product Image</td>
+      <td>Product Description</td>
+      <td>Product Price</td>
+      <td>Product Category</td>
+      <td>Product Suppliers</td>
+      <td>Actions</td>
+    </tr>
+    {%for product in products %}
+    <tr class="text-center">
+      <td>{{product.id}}</td>
+      <td>{{product.name}}</td>
+      <td>
+        {% if product.image %}
+        <img src="{{ product.image.url }}"
+          class="object-fit-contain"
+          height="150px"
+          width="150px"
+        />
+        {% else %}
+        <img
+          src="/media/images/defualt.png"
+          class="w-20 poster-thumb object-fit-contain"
+        />
+        {% endif %}
+      </td>
+      <td>{{product.description}}</td>
+      <td>{{product.price}}</td>
+      <td>{{product.category}}</td>
+      <td>
+        {% for supplier in product.suppliers.all %} - {{ supplier.name }} <br />
+        {% endfor %}
+      </td>
+
+      <td>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-mdb-ripple-init
+          data-mdb-modal-init
+          data-mdb-target="#updateModal{{product.id}}"
+          data-mdb-whatever="@fat"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal{{ product.id }}"
+        >
+          Delete
+        </button>
+      </td>
+      <!-- delete modal -->
+      <div
+        class="modal fade"
+        id="deleteModal{{ product.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Delete Category
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Are you sure you want to delete the
+                <strong> product: {{product.name}} ID: {{ product.id }}</strong
+                >?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <a
+                href="{% url 'product:delete_products_view' product.id %}"
+                class="btn btn-danger"
+                >Delete</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Update modal -->
+      <div
+        class="modal fade"
+        id="updateModal{{ product.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Update product {{products.name}}
+              </h5>
+
+              <button
+                type="button"
+                class="btn-close"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form
+                id="updateForm{{ product.id }}"
+                action="{% url 'product:update_products_view' product.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="product-name" class="col-form-label"
+                    >product name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="product-name"
+                    name="name"
+                    value="{{product.name}}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="description-text" class="col-form-label"
+                    >Description:</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="description-text"
+                    rows="2"
+                    name="description"
+                    required
+                  >
+{{product.description}}</textarea
+                  >
+                </div>
+                <div class="mb-3">
+                  <label for="price-num" class="col-form-label">Price:</label>
+                  <input
+                    class="form-control"
+                    id="price-num"
+                    name="price"
+                    value="{{product.price}}"
+                  />
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <label>Category name</label>
+
+                  <select style="width: 100%" name="category" value={{category.name}} required>
+                    {%for category in categories %}
+                    <option value="{{category.id}}" {% if category.id == product.category.id %}selected{% endif %}>{{category.name}}</option>
+                    {% endfor%}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="suppliers" class="form-label">Suppliers</label>
+                  {% for supplier in suppliers %}
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="supplier{{ supplier.id }}"
+                      name="suppliers"
+                      value="{{ supplier.id }}"
+                      {% if supplier in product.suppliers.all %}checked{% endif %} />
+                  <label class="form-check-label" for="supplier{{ supplier.id }}">
+                      {{ supplier.name }}
+                  </label>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="mb-4 d-flex bject-fit-contain">
+                  <img
+                    id="selectedImage"
+                    src="{{ product.image }}"
+                    alt="example placeholder"
+                    style="width: 100px;"
+                    name="image"
+                  />
+                </div>
+                <div class="d-flex justify-content-start">
+                  <div data-mdb-ripple-init class="mb-4">
+                    <label class="form-label text-black m-1" for="imageModal"
+                      >Upload Image</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="imageModal"
+                      name="image"
+                      onchange="displaySelectedImage(event, 'selectedImage')"
+                      accept="image/*"
+                      {% if product.id in product.image%}selected{%endif%}
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-success"
+                form="updateForm{{ product.id }}"
+                data-mdb-ripple-init
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tr>
+
+    {%endfor%}
+  </table>
+        </div>
+
+{% endblock %}

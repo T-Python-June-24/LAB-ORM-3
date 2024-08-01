@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %} All Suppliers {% endblock %}
+
+{% block content %}
+<div class="col py-3">
+            <h1> Inventory Management</h1>
+            <div class="col py-3">
+    <h1> Add Inventory</h1>
+    <form action="{% url 'inventory:add_inventories_view' %}" method="post">
+    {% csrf_token %}
+      <div data-mdb-input-init class="form-outline mb-4">
+        <label >Product name</label>
+
+        <select style="width: 100%;" name="product" id="cars">
+            {%for product in products %}
+            <option value="{{product.id}}">{{product.name}}</option>
+            {% endfor%}
+        </select>
+    </div>
+  <div data-mdb-input-init class="form-outline mb-4">
+    <input type="number" id="quantity" class="form-control" name="quantity" required/>
+    <label class="form-label" for="quantity">Quantity</label>
+  </div>
+
+    <div data-mdb-input-init class="form-outline mb-4">
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="True" required/>
+        <label class="form-check-label" for="inlineRadio1">In Stock</label>
+        </div>
+    
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="False" required/>
+        <label class="form-check-label" for="inlineRadio2">Out of Stock</label>
+        </div>
+    </div>
+
+  <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-block mb-4">Add Supplier</button>
+</form>
+</div> 
+   <table class="table table-bordered">
+    <tr class="bg-info text-white">
+      <td>NO.</td>
+      <td>Inventory ID</td>
+      <td>Product Name</td>
+      <td>Quantity</td>
+      <td>Status</td>
+      <td>Created Date</td>
+      <td>Actions</td>
+    </tr>
+    {%for inventory in inventories %}
+    <tr class="text-center">
+      <td>{{forloop.counter}}</td>
+      <td>{{inventory.id}}</td>
+      <td>{{inventory.product}}</td>
+      <td>{{inventory.quantity}}</td>
+      <td>
+        {% if inventory.status == True %}
+        In Stock
+        {% else %}
+        Out of Stock
+        {%endif%}
+    </td>
+      <td>{{inventory.create_date}}</td>
+
+
+      <td>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-mdb-ripple-init
+          data-mdb-modal-init
+          data-mdb-target="#updateModal{{inventory.id}}"
+          data-mdb-whatever="@fat"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal{{ inventory.id }}"
+        >
+          Delete
+        </button>
+      </td>
+      <!-- delete modal -->
+      <div
+        class="modal fade"
+        id="deleteModal{{ inventory.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Delete Category
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Are you sure you want to delete the
+                <strong>
+                  inventory: {{inventory.name}} ID: {{ inventory.id }}</strong
+                >?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <a
+                href="{% url 'inventory:delete_inventories_view' inventory.id %}"
+                class="btn btn-danger"
+                >Delete</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Update modal -->
+     <div
+        class="modal fade"
+        id="updateModal{{ inventory.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Update inventory {{inventory.product}}
+              </h5>
+
+              <button
+                type="button"
+                class="btn-close"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form
+                id="updateForm{{ inventory.id }}"
+                action="{% url 'inventory:update_inventories_view' inventory.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Product Quantity:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="message-text"
+                    name="quantity" value="{{inventory.quantity}}"></input>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Status:</label>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="status" id="inlineRadio1" value="True" />
+                    <label class="form-check-label" for="inlineRadio1">In Stock</label>
+                    </div>
+                
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="status" id="inlineRadio2" value="False" />
+                    <label class="form-check-label" for="inlineRadio2">Out of Stock</label>
+                    </div>
+                </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                form="updateForm{{ inventory.id }}"
+                data-mdb-ripple-init
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tr>
+
+    {%endfor%}
+  </table>
+</div>
+
+{% endblock %}

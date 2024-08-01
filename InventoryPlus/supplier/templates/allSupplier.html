@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %} All Suppliers {% endblock %}
+
+{% block content %}
+<div class="col py-3">
+            <h1> Suppliers Management</h1>
+            <div class="m-4">
+                     <a href="{% url 'supplier:add_suppliers_view' %}" class="btn btn-primary">ADD Supplier +</a>
+            </div>
+  <table class="table table-bordered">
+    <tr class="bg-info text-white">
+      <td>ID</td>
+      <td>Supplier Name</td>
+      <td>Supplier Email</td>
+      <td>Supplier Phone</td>
+      <td>Actions</td>
+    </tr>
+    {%for supplier in suppliers %}
+    <tr class="text-center">
+      <td>{{supplier.id}}</td>
+      <td>{{supplier.name}}</td>
+
+      <td>{{supplier.email}}</td>
+      <td>{{supplier.phone}}</td>
+
+      <td>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-mdb-ripple-init
+          data-mdb-modal-init
+          data-mdb-target="#updateModal{{supplier.id}}"
+          data-mdb-whatever="@fat"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal{{ supplier.id }}"
+        >
+          Delete
+        </button>
+      </td>
+      <!-- delete modal -->
+      <div
+        class="modal fade"
+        id="deleteModal{{ supplier.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Delete Category
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Are you sure you want to delete the
+                <strong>
+                  Supplier: {{supplier.name}} ID: {{ supplier.id }}</strong
+                >?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <a
+                href="{% url 'supplier:delete_suppliers_view' supplier.id %}"
+                class="btn btn-danger"
+                >Delete</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Update modal -->
+      <div
+        class="modal fade"
+        id="updateModal{{ supplier.id }}"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Update Supplier {{suppliers.name}}
+              </h5>
+
+              <button
+                type="button"
+                class="btn-close"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form
+                id="updateForm{{ supplier.id }}"
+                action="{% url 'supplier:update_suppliers_view' supplier.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label"
+                    >Supplier name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="recipient-name"
+                    name="name"
+                    value="{{supplier.name}}"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Email:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="message-text"
+                    name="email" value="{{supplier.email}}"></input>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Phone:</label>
+                  <input
+                    class="form-control"
+                    id="message-text"
+                    name="phone" value="{{supplier.phone}}"></input>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-mdb-ripple-init
+                data-mdb-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                form="updateForm{{ supplier.id }}"
+                data-mdb-ripple-init
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tr>
+
+    {%endfor%}
+  </table>
+        </div>
+
+{% endblock %}
