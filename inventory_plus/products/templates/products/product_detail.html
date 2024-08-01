@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Product Detail</h2>
+<p><strong>Name:</strong> {{ product.name }}</p>
+<p><strong>Category:</strong> {{ product.category.name }}</p>
+<p><strong>Suppliers:</strong> {{ product.suppliers.all|join:", " }}</p>
+<p><strong>Description:</strong> {{ product.description }}</p>
+<p><strong>Price:</strong> {{ product.price }}</p>
+<p><strong>Stock Quantity:</strong> {{ product.stock_quantity }}</p>
+<p><strong>Expiry Date:</strong> {{ product.expiry_date }}</p>
+
+{% if product.image %} <!-- pic -->
+    <p><strong>Image:</strong></p>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 300px;">
+{% else %}
+    <p><strong>No image available.</strong></p>
+{% endif %}       <!-- pic -->
+
+<a href="{% url 'product_edit' product.pk %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'product_delete' product.pk %}" class="btn btn-danger">Delete</a>
+
+<a href="{% url 'product_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

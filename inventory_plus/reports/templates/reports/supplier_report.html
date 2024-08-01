@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Supplier Report</h2>
+    
+    <h3>Supplier Details</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Total Orders</th>
+                <th>Total Payments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td>{{ supplier.phone }}</td>
+                <td>{{ supplier.email }}</td>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.total_orders }}</td>
+                <td>${{ supplier.total_payments }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No suppliers found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

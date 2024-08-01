@@ -1,0 +1,45 @@
+<!-- In templates/reports/inventory_report.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Inventory Report</h2>
+    <p><strong>Total Stock Quantity:</strong> {{ total_stock }}</p>
+    <p><strong>Total Inventory Value:</strong> {{ total_value }}</p>
+    
+    <h3>Product Details</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Suppliers</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Expiry Date</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category.name }}</td>
+                <td>{{ product.suppliers.all|join:", " }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stock_quantity }}</td>
+                <td>{{ product.expiry_date }}</td>
+            
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No products found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

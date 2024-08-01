@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Category Detail</h2>
+<p><strong>Name:</strong> {{ category.name }}</p>
+
+<a href="{% url 'category_edit' category.pk %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'category_delete' category.pk %}" class="btn btn-danger">Delete</a>
+
+<a href="{% url 'category_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}
+

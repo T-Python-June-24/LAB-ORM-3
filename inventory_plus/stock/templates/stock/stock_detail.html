@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Stock Detail</h2>
+    <div class="card">
+        <div class="card-header">
+            {{ stock.name }}
+        </div>
+        <div class="card-body">
+            <p><strong>Stock Quantity:</strong> {{ stock.stock_quantity }}</p>
+            <p><strong>Expiry Date:</strong> {{ stock.expiry_date }}</p>
+            <p><strong>Description:</strong> {{ stock.description }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

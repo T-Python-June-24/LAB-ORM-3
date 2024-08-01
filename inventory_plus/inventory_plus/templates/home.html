@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="jumbotron jumbotron-fluid text-center">
+    <br>
+    <h2 class="display-4">Welcome to Inventory Plus</h2>
+    <p class="lead">Your one-stop solution for managing corporate inventory efficiently.</p>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="card-title">Inventory Reports</h4>
+                        <p class="card-text">Generate detailed reports on inventory levels, turnover, best-sellers, and more.</p>
+                        <a href="{% url 'inventory_report' %}" class="btn btn-info">Generate Inventory Report</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="card-title">Supplier Reports</h4>
+                        <p class="card-text">Generate reports on supplier performance, order history, and payments.</p>
+                        <a href="{% url 'supplier_report' %}" class="btn btn-info">Generate Supplier Report</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+<div class="text-center">
+    <h3>Notifications</h3>
+    <div class="alert alert-warning" role="alert">
+        <h4>Low Stock Products</h4>
+        {% if low_stock_products.exists %}
+            {% for product in low_stock_products %}
+                <p>{{ product.name }} - Stock Quantity: {{ product.stock_quantity }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No products with low stock.</p>
+        {% endif %}
+    </div>
+    
+    <div class="alert alert-danger" role="alert">
+        <h4>Approaching Expiry Products</h4>
+        {% if approaching_expiry_products.exists %}
+            {% for product in approaching_expiry_products %}
+                <p>{{ product.name }} - Expiry Date: {{ product.expiry_date }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No products approaching expiry.</p>
+        {% endif %}
+    </div>
+    
+    <a href="{% url 'notification_list' %}" class="btn btn-info mt-3">View All Notifications</a>
+    <a href="{% url 'stock_list' %}" class="btn btn-info mt-3">View Stock List</a>
+
+</div>
+
+<div class="container mt-5">
+    {% for stock in stocks %}
+        <p>{{ stock.name }} - Stock Quantity: {{ stock.stock_quantity }}</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block footer %}
+    <footer class="footer bg-dark text-center py-4">
+        <div class="container">
+            <p class="mb-2">&copy; 2024 Noor's Inventory Plus</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                <li class="list-inline-item"><a href="#">Terms of Service</a></li>
+                <li class="list-inline-item"><a href="#">Contact Us</a></li>
+            </ul>
+            <div class="social-icons">
+                <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

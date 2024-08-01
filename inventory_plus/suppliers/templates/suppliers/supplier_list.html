@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Supplier List</h2>
+
+        <form class="form-inline" method="GET" action="{% url 'supplier_list' %}">
+            <div class="search-wrapper">
+                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search" value="{{ request.GET.q }}">
+                <button class="btn btn-outline-success my-2" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+    {% if suppliers %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>email</th>
+                <th>phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td><a href="{% url 'supplier_detail' supplier.pk %}">{{ supplier.name }}</a></td>
+                <td>{{ supplier.email }}</td>
+                <td>{{ supplier.phone }}</td>
+                <td>
+                    <a href="{% url 'supplier_edit' supplier.pk %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'supplier_delete' supplier.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif request.GET.q %}
+    <div class="lead">
+        <p>No products found matching "{{ request.GET.q }}"</p>
+    </div>
+    {% endif %}
+        <a href="{% url 'supplier_add' %}" class="btn btn-success">Add New Supplier</a>
+    </div>
+{% endblock %}
+

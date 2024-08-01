@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+<h2 class="mb-4">{% if form.instance.pk %}Edit Supplier{% else %}Add Supplier{% endif %}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field.errors }}
+                <div class="form-control-wrapper">
+                    {{ field }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-success">{% if form.instance.pk %}Update{% else %}Add{% endif %} Supplier</button>
+    <a href="{% url 'supplier_list' %}" class="btn btn-secondary">Back to List</a>
+
+</form>
+</div>
+{% endblock %}
