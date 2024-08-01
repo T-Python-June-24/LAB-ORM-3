@@ -14,7 +14,7 @@ def dashboard_view(request:HttpRequest):
     total_products = Product.objects.count()
     total_suppliers = Supplier.objects.count()
     total_inventory_items = Inventory.objects.count() # count the number of products using 
-    products_with_quantity = Product.objects.annotate( total_quantity=Sum('inventory__quantity'))
+    products_with_quantity = Product.objects.annotate( total_quantity=Sum('inventory__quantity')) #annotate from 
 
     page_number = request.GET.get("page", 1)
     paginator = Paginator(products_with_quantity, 2)

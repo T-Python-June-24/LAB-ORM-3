@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest,HttpResponse
 from .models import Product,Supplier , Category
+from django.contrib import messages
+
 
 
 
@@ -11,8 +13,15 @@ def all_products_view(request:HttpRequest ):
     return render(request, "allProducts.html", {"products":products,"categories":category,"suppliers": allSuppliers})
 
 def delete_products_view(request:HttpRequest, product_id: int):
-    product = Product.objects.get(id=product_id)
-    product.delete()
+    try:
+        product = Product.objects.get(id=product_id) # implement feedback messages
+        # raise Exception('filed ')
+        product.delete()
+        messages.success(request, "Deleted game successfully", "alert-success")
+    except Exception as e:
+        print(e)
+        messages.error(request, "Couldn't Delete game", "alert-danger")
+
     return redirect("product:all_products_view")
 
 def add_products_view(request: HttpRequest):
