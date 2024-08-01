@@ -3,6 +3,10 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Stock List</h2>
+
+    <p>Total Stock Quantity: {{ total_stock_quantity }}</p>
+    
+    {% if stocks %}
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -23,5 +27,8 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>No stocks available.</p>
+    {% endif %}
 </div>
 {% endblock %}

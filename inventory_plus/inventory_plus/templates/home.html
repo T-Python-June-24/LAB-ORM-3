@@ -42,6 +42,8 @@
         {% else %}
             <p>No products with low stock.</p>
         {% endif %}
+        <p>Total Low Stock Count: {{ low_stock_count }}</p>
+
     </div>
     
     <div class="alert alert-danger" role="alert">
@@ -53,6 +55,8 @@
         {% else %}
             <p>No products approaching expiry.</p>
         {% endif %}
+        <p>Total Expired Stock Count: {{ approaching_expiry_count }}</p>
+
     </div>
     
     <a href="{% url 'notification_list' %}" class="btn btn-info mt-3">View All Notifications</a>
@@ -66,6 +70,13 @@
     {% endfor %}
 </div>
 
+{% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
