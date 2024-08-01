@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for product in products_with_quantity %}
+                {% for product in products %}
                 <tr>
                     <th scope="row">{{ product.id }}</th>
                     <td>
@@ -70,10 +70,29 @@
                 </tr>
                 {% endfor %}
             </tbody>
-        </table>
-       
-        
+        </table> 
     </div>
+    <div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+        {% if products.has_previous %}
+            <div class="d-flex gap-1">
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ products.previous_page_number }}">&laquo; previous</a>
+            </div>
+        {% endif %}
+
+        <div class="current">
+            Page {{ products.number }} of {{ products.paginator.num_pages }}
+        </div>
+
+        {% if products.has_next %}
+            <div class="d-flex gap-1">
+                <a href="?page={{ products.next_page_number }}">next &raquo;</a>
+                <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+            </div>
+        {% endif %}
+
+
+</div>
     <!-- <div style="display: flex; flex-direction: row;">
         {% for product in products%}
     <div class=" ">
