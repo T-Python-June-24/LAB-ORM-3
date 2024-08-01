@@ -1,0 +1,184 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <title>{% block title %} {% endblock %} </title>
+  <style>
+    .sidebar {
+      height: 100vh;
+      text-transform: capitalize;
+      font-size: 1.2rem;
+    }
+
+    @media (min-width: 360px) and (max-width: 767px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    @media (min-width: 574px) and (max-width: 767px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    .material-symbols-outlined {
+      font-size: 1.7rem;
+    }
+
+    .notification {
+      font-size: 2rem;
+    }
+
+    .badge {
+      font-size: .7rem;
+    }
+
+    .sticky-right {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      left: 0;
+    }
+
+    .sidebar,
+    header {
+      background-color: #FFFFFF;
+    }
+
+    body {
+      background-color: #F0F1F3;
+      color: #858C9A;
+      text-transform: capitalize;
+    }
+
+    .active {
+
+      background-color: #858C9A;
+      border-radius: 2rem;
+    }
+
+    .nav-link {
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="navbar navbar-expand-lg sticky-top shadow navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Inventory Plus</a>
+      <div class="d-flex me-lg-5 mt-lg-2 me-md-5 mt-md-2">
+        <form class="d-flex" role="search" method="get" action="{% block search %} {% endblock %}">
+          <input class="form-control me-2" type="search" placeholder="Search for a product" aria-label="Search"
+            name="searched" value="{{ search_term }}">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+
+      <button class="navbar-toggler d-lg-none d-md-none" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+
+  {% url 'inventory:inventory_view' as inventory_view %}
+  {% url 'inventory:home_view' as home_view %}
+  {% url 'products:all_products' as all_products %}
+  {% url 'suppliers:supplier_list' as supplier_list %}
+  {% url 'categories:all_categories' as all_categories %}
+
+  <div class="d-flex">
+    <div class="sidebar p-3 ">
+      <ul class="nav flex-column gap-2 mt-5 ">
+        <li class="nav-item ">
+          <a class="nav-link d-flex gap-2 {% if request.path == home_view %} active {% endif %}" aria-current="page"
+            href="{{home_view}}">
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link {% if request.path == inventory_view %} active {% endif %} "
+            href="{{inventory_view}}">Inventory</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == supplier_list %} active {% endif %}"
+            href="{{supplier_list}}">Suppliers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == all_products %} active {% endif %}"
+            href="{{all_products}}">products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == all_categories %} active {% endif %}"
+            href="{{all_categories}}">categories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Reports</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Notifications</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-3">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+
+  <!-- Offcanvas for small screens -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{home_view}}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{inventory_view}}">Inventory</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{supplier_list}}">Suppliers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == add_supplier %} active {% endif %}"
+            href="{{all_products}}">products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == all_categories %} active {% endif %}"
+            href="{{all_categories}}">categories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Reports</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Notifications</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

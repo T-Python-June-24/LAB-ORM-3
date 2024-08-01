@@ -1,0 +1,14 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %} Update Product {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Update Product</h1>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'products:product_update' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% endblock %}

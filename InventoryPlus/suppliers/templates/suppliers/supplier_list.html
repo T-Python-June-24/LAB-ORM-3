@@ -1,0 +1,95 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %} All Suppliers {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Suppliers</h1>
+    
+    <!-- Button to trigger modal -->
+    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+        Add Supplier
+    </button>
+    
+    <!-- Supplier Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Products Supplied</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td>{{ supplier.supplierName }}</td>
+                <td>{{ supplier.supplierAddress }}</td>
+                <td>{{ supplier.supplierPhoneNumber }}</td>
+                <td>{{ supplier.supplierEmail }}</td>
+                <td>{{ supplier.product_set.count }}</td>
+                <td>
+                    <a href="{% url 'suppliers:supplier_detail' supplier.pk %}" class="btn btn-info btn-sm">View</a>
+                    <!-- Trigger edit modal -->
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSupplierModal{{ supplier.pk }}">Edit</button>
+                    <a href="{% url 'suppliers:supplier_delete' supplier.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+
+            <!-- Modal for Editing Supplier -->
+            <div class="modal fade" id="editSupplierModal{{ supplier.pk }}" tabindex="-1" aria-labelledby="editSupplierModalLabel{{ supplier.pk }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editSupplierModalLabel{{ supplier.pk }}">Edit Supplier</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" enctype="multipart/form-data" action="{% url 'suppliers:supplier_update' supplier.pk %}">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <input type="hidden" name="edit_supplier" value="true">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Adding Supplier -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSupplierModalLabel">Add New Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" action="{% url 'suppliers:supplier_add' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="add_supplier" value="true">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

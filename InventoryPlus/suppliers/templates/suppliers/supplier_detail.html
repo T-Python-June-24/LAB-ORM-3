@@ -1,0 +1,95 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %} Supplier Details {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ supplier.supplierName }}</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Address:</strong> {{ supplier.supplierAddress }}</p>
+            <p><strong>Phone Number:</strong> {{ supplier.supplierPhoneNumber }}</p>
+            <p><strong>Email:</strong> {{ supplier.supplierEmail }}</p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{{ supplier.supplierImage.url }}" alt="{{ supplier.supplierName }}" class="img-fluid rounded" style="max-width: 100px;">
+        </div>
+    </div>
+    <h2 class="mt-4">Products Supplied</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.productName }}</td>
+                    <td>{{ product.productPrice }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4">
+        <a href="javascript:openUpdateModal({{ supplier.id }})" class="btn btn-primary">Update</a>
+        <a href="javascript:openDeleteModal({{ supplier.id }})" class="btn btn-danger">Delete</a>
+        <a href="{% url 'suppliers:supplier_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<!-- Modal for Update -->
+<div id="updateModal" class="modal fade" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Form fields for Supplier -->
+                    <input type="submit" value="Update" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Delete -->
+<div id="deleteModal" class="modal fade" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="deleteForm" method="post">
+                    {% csrf_token %}
+                    <p>Are you sure you want to delete this supplier?</p>
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openUpdateModal(supplierId) {
+    const updateForm = document.getElementById('updateForm');
+    updateForm.action = `{% url 'suppliers:supplier_update' 0 %}`.replace('0', supplierId);
+    new bootstrap.Modal(document.getElementById('updateModal')).show();
+}
+
+function openDeleteModal(supplierId) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = `{% url 'suppliers:supplier_delete' 0 %}`.replace('0', supplierId);
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

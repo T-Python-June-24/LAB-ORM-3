@@ -1,0 +1,195 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %} All Products {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>All Products</h1>
+    <form method="GET">
+        <input type="text" name="q" placeholder="Search products" class="form-control mb-3" value="{{ request.GET.q }}">
+    </form>
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add New Product</button>
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Description</th>
+                <th>Product Price</th>
+                <th>Product Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.productName }}</td>
+                    <td>{{ product.productDescription }}</td>
+                    <td>{{ product.productPrice }}</td>
+                    <td>{{ product.productStock }}</td>
+                    <td>
+                        <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary">Details</a>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal{{ product.id }}">Update</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.id }}">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'products:product_create' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_productName" class="form-label">Product Name</label>
+                            <input type="text" name="productName" class="form-control" id="id_productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productDescription" class="form-label">Product Description</label>
+                            <textarea name="productDescription" class="form-control" id="id_productDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productImage" class="form-label">Product Image</label>
+                            <input type="file" name="productImage" class="form-control" id="id_productImage" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productPrice" class="form-label">Product Price</label>
+                            <input type="number" step="0.01" name="productPrice" class="form-control" id="id_productPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productionDate" class="form-label">Production Date</label>
+                            <input type="date" name="productionDate" class="form-control" id="id_productionDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_expirationDate" class="form-label">Expiration Date</label>
+                            <input type="date" name="expirationDate" class="form-control" id="id_expirationDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productStock" class="form-label">Product Stock</label>
+                            <input type="number" name="productStock" class="form-control" id="id_productStock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_unitPrice" class="form-label">Unit Price</label>
+                            <input type="number" step="0.01" name="unitPrice" class="form-control" id="id_unitPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_totalPriceOfunits" class="form-label">Total Price of Units</label>
+                            <input type="number" step="0.01" name="totalPriceOfunits" class="form-control" id="id_totalPriceOfunits" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_supplierDiscount" class="form-label">Supplier Discount</label>
+                            <input type="number" name="supplierDiscount" class="form-control" id="id_supplierDiscount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productCategory" class="form-label">Product Category</label>
+                            <select name="productCategory" class="form-control" id="id_productCategory" required>
+                                {% for category in categories %}
+                                    <option value="{{ category.pk }}">{{ category.categoryName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productSupplier" class="form-label">Product Supplier</label>
+                            <select name="productSupplier" class="form-control" id="id_productSupplier" multiple required>
+                                {% for supplier in suppliers %}
+                                    <option value="{{ supplier.pk }}">{{ supplier.supplierName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Add Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for product in products %}
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal{{ product.id }}" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'products:product_update' product.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_productName{{ product.id }}" class="form-label">Product Name</label>
+                            <input type="text" name="productName" class="form-control" id="id_productName{{ product.id }}" value="{{ product.productName }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productDescription{{ product.id }}" class="form-label">Product Description</label>
+                            <textarea name="productDescription" class="form-control" id="id_productDescription{{ product.id }}" rows="3" required>{{ product.productDescription }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productImage{{ product.id }}" class="form-label">Product Image</label>
+                            <input type="file" name="productImage" class="form-control" id="id_productImage{{ product.id }}">
+                            <img src="{{ product.productImage.url }}" alt="{{ product.productName }}" class="img-thumbnail mt-2" style="max-height: 150px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productPrice{{ product.id }}" class="form-label">Product Price</label>
+                            <input type="number" step="0.01" name="productPrice" class="form-control" id="id_productPrice{{ product.id }}" value="{{ product.productPrice }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productionDate{{ product.id }}" class="form-label">Production Date</label>
+                            <input type="date" name="productionDate" class="form-control" id="id_productionDate{{ product.id }}" value="{{ product.productionDate }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_expirationDate{{ product.id }}" class="form-label">Expiration Date</label>
+                            <input type="date" name="expirationDate" class="form-control" id="id_expirationDate{{ product.id }}" value="{{ product.expirationDate }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productStock{{ product.id }}" class="form-label">Product Stock</label>
+                            <input type="number" name="productStock" class="form-control" id="id_productStock{{ product.id }}" value="{{ product.productStock }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_unitPrice{{ product.id }}" class="form-label">Unit Price</label>
+                            <input type="number" step="0.01" name="unitPrice" class="form-control" id="id_unitPrice{{ product.id }}" value="{{ product.unitPrice }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_totalPriceOfunits{{ product.id }}" class="form-label">Total Price of Units</label>
+                            <input type="number" step="0.01" name="totalPriceOfunits" class="form-control" id="id_totalPriceOfunits{{ product.id }}" value="{{ product.totalPriceOfunits }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_supplierDiscount{{ product.id }}" class="form-label">Supplier Discount</label>
+                            <input type="number" name="supplierDiscount" class="form-control" id="id_supplierDiscount{{ product.id }}" value="{{ product.supplierDiscount }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productCategory{{ product.id }}" class="form-label">Product Category</label>
+                            <select name="productCategory" class="form-control" id="id_productCategory{{ product.id }}" required>
+                                {% for category in categories %}
+                                    <option value="{{ category.pk }}" {% if product.productCategory == category %}selected{% endif %}>{{ category.categoryName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_productSupplier{{ product.id }}" class="form-label">Product Supplier</label>
+                            <select name="productSupplier" class="form-control" id="id_productSupplier{{ product.id }}" multiple required>
+                                {% for supplier in suppliers %}
+                                    <option value="{{ supplier.pk }}" {% if supplier in product.productSupplier.all %}selected{% endif %}>{{ supplier.supplierName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
