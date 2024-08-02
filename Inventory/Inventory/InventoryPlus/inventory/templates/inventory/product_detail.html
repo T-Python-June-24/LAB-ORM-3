@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-top: 20px;">
+    <a href="{% url 'inventory:product_list' %}" style="color: #007bff; text-decoration: none; font-size: 16px;"> <i class="fas fa-arrow-left"></i> Back to List</a>
+</div>
+
+<div class="product-detail-card small-card">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+
+    <h1>{{ product.name }}</h1>
+    <p class="product-description">{{ product.description }}</p>
+    <p class="product-price">Price: ${{ product.price }}</p>
+    <p class="product-category">Category: {{ product.category.name }}</p>
+    <p class="product-suppliers">Suppliers: 
+        {% for supplier in product.suppliers.all %}
+            <a href="{% url 'inventory:supplier_detail' supplier.pk %}">{{ supplier.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p class="product-stock">Stock Status: 
+        {% if product.stock_status == 'In Stock' %}
+        <span class="badge badge-success">{{ product.stock_status }}</span>
+        {% elif product.stock_status == 'Low Stock' %}
+        <span class="badge badge-warning">{{ product.stock_status }}</span>
+        {% else %}
+        <span class="badge badge-danger">{{ product.stock_status }}</span>
+        {% endif %}
+    </p>
+
+    <h3>Latest Stock Entry</h3>
+    {% if latest_stock_entry %}
+    <p>{{ latest_stock_entry.quantity }} units (Last updated: {{ latest_stock_entry.date_updated }})</p>
+    <h3>Total Stock of this product</h3>
+    <p>{{ product.get_stock_level }} units</p>
+    {% else %}
+    <p>No stock entries available.</p>
+    {% endif %}
+
+    <div class="product-actions">
+        <a class="btn btn-success" style="margin-right: 10px;" href="{% url 'inventory:stock_update' pk=product.pk %}">Update Stock</a>
+        <a class="btn btn-info" style="margin-right: 10px;" href="{% url 'inventory:product_edit' pk=product.pk %}">Edit Product</a>
+        <a class="btn btn-danger" style="margin-right: 10px;" href="{% url 'inventory:product_delete' pk=product.pk %}">Delete Product</a>
+    </div>
+</div>
+{% endblock %}

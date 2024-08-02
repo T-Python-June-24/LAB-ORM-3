@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block content %}
+<h2>Supplier List</h2>
+<table
+  style="
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: none;
+  "
+>
+  <thead>
+    <tr>
+      <th style="border: none; padding: 8px; width: 50%">Name</th>
+      <th style="border: none; padding: 8px; width: 50%">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for supplier in suppliers %}
+    <tr style="border-bottom: 1px solid #ddd">
+      <td style="border: none; padding: 8px; padding-right: 5px">
+        <a
+          href="{% url 'inventory:supplier_detail' supplier.pk %}"
+          style="text-decoration: none; color: #007bff"
+        >
+          {{ supplier.name }}
+        </a>
+      </td>
+      <td style="border: none; padding: 8px">
+        <div style="display: flex; gap: 10px; justify-content: flex-start">
+          <a
+            href="{% url 'inventory:supplier_edit' supplier.pk %}"
+            style="
+              background-color: #007bff;
+              color: white;
+              padding: 5px 10px;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >Edit</a
+          >
+          <a
+            href="{% url 'inventory:supplier_inventory' supplier.pk %}"
+            style="
+              background-color: gray;
+              color: white;
+              padding: 5px 10px;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >View Inventory</a
+          >
+          <form
+            id="delete-form-{{ supplier.pk }}"
+            method="POST"
+            action="{% url 'inventory:supplier_delete' supplier.pk %}"
+            style="display: none"
+          >
+            {% csrf_token %}
+          </form>
+          <a href="{% url 'inventory:supplier_delete' supplier.pk %}" class="btn btn-danger" style="color: white; text-decoration: none; background-color: rgb(240, 13, 13); padding: 10px 15px; border-radius: 5px; display: inline-block; margin-right: 5px;">
+            Delete
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="2" style="border: none; padding: 8px">
+        No suppliers found.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a
+  href="{% url 'inventory:supplier_create' %}"
+  style="
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+  "
+>
+  Add Supplier
+</a>
+
+{% endblock %}

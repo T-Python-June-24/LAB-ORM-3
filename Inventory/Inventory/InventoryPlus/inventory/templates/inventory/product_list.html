@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+<h2>Product List</h2>
+
+<h3> Total price of all products: {{price}} $</h3>
+
+<div class="search-container">
+    <form method="get" action="{% url 'inventory:product_search' %}">
+        <input type="text" name="q" placeholder="Search products by name, category, or supplier" value="{{ request.GET.q }}" class="search-input">
+        <button type="submit" class="btn search-btn">Search</button>
+    </form>
+</div>
+
+<div class="product-cards">
+    {% if inventory %}
+        {% for product in inventory %}
+        <div class="product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% else %}
+            <img src="{% static 'images/default-product.png' %}" alt="Default Image" class="product-image">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <p>Stock Status: {{ product.stock_status }}</p>  
+            <p>number supplier: {{product.supplier_count}}</p>
+            <a href="{% url 'inventory:product_detail' product.pk %}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
+</div>
+
+<br>
+<div class="product-header">
+    <a href="{% url 'inventory:product_create' %}" class="btn">Add Product</a>
+</div>
+
+<div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+    {% if inventory.has_previous %}
+        <div class="d-flex gap-1">
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ inventory.previous_page_number }}">&laquo; previous</a>
+        </div>
+    {% endif %}
+
+    <div class="current">
+        Page {{ inventory.number }} of {{ inventory.paginator.num_pages }}
+    </div>
+
+    {% if inventory.has_next %}
+        <div class="d-flex gap-1">
+            <a href="?page={{ inventory.next_page_number }}">next &raquo;</a>
+            <a href="?page={{ inventory.paginator.num_pages }}">last &raquo;</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
