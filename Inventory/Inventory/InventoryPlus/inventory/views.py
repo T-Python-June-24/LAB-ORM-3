@@ -262,6 +262,7 @@ def export_all_data():
 
 # Product Views
 def product_list(request, category_name):
+
     # messages.error(request, "there was an error")
 
     if category_name == "all":
