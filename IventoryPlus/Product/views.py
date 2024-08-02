@@ -89,6 +89,18 @@ def product_delete(request:HttpResponse, pk):
     return render(request, 'Product/product_confirm_delete.html', {'product': product})
 
 
+def abdullah_is_trying_not_tomess_up(request:HttpResponse):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product added successfully')
+            return redirect('Product:thanks')
+    else:
+        form = ProductForm()
+        
+    return render(request, 'Product/abdullah_is_trying_not_to_mess_up.html')
+
 
 def product_search(request):
     query = request.GET.get('query')
@@ -158,9 +170,7 @@ def export_products_csv(request:HttpResponse):
         'Supplier ID', 'Supplier Name', 'Supplier Email', 'Supplier Logo URL', 'Supplier Phone Number',
         'Supplier Website', 'Supplier Contact Person Name', 'Supplier Contact Person Job Title',
         'Supplier Country', 'Supplier City', 'Supplier Active', 'Supplier Supplied Products',
- 
     ])
-
     # Write data rows
     products = Product.objects.all()
     for product in products:
