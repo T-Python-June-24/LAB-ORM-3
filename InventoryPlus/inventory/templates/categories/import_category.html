@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Import Categories{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Import Categories from CSV</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+{% endblock %}

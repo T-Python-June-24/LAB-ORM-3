@@ -1,0 +1,138 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col d-flex justify-content-between">
+            <h4 class="mt-2">All Products ({{ total_items }})</h4>
+            <div>
+                <a href="{% url 'inventory:product_create' %}" class="btn btn-outline-success btn-custom mt-2 mr-2">Add Product</a>
+                <a href="{% url 'inventory:import_csv' model='product' %}" class="btn btn-custom mt-2">Import Products (CSV)</a>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" class="mb-4" id="filter-form">
+        <div class="form-row align-items-end">
+            <div class="col-5">
+                <label for="category">Category</label>
+                <select name="category" class="form-control" id="category" onchange="document.getElementById('filter-form').submit();">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <a href="{% url 'inventory:product_list' %}" class="btn btn-secondary btn-action mt-2 ml-2 float-right">Clear Filter</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="bg-light p-2 d-flex justify-content-between align-items-center mb-4">
+        <form method="get" id="pagination-form" class="form-inline">
+            <label for="paginate_by" class="mr-2 mb-0">Items per page:</label>
+            <select name="paginate_by" class="form-control form-control-sm mr-2" onchange="document.getElementById('pagination-form').submit();">
+                <option value="5" {% if paginate_by == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if paginate_by == 10 %}selected{% endif %}>10</option>
+                <option value="30" {% if paginate_by == 30 %}selected{% endif %}>30</option>
+                <option value="50" {% if paginate_by == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if paginate_by == 100 %}selected{% endif %}>100</option>
+            </select>
+        </form>
+
+        <form method="get" id="sorting-form" class="form-inline">
+            <input type="hidden" name="category" value="{{ request.GET.category }}">
+            <label for="paginate_by" class="mr-2 mb-0">Sort by:</label>
+            <select name="sort" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
+                <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price</option>
+                <option value="stock" {% if sort_by == 'stock' %}selected{% endif %}>Stock</option>
+                <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Creation Time</option>
+                <option value="updated_at" {% if sort_by == 'updated_at' %}selected{% endif %}>Update Time</option>
+            </select>
+            <select name="order" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+                <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+        </form>
+    </div>
+
+    <table class="table table-striped text-center">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td class="align-middle">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-thumbnail" style="max-width: 50px; max-height: 50px;" alt="{{ product.name }}">
+                    {% endif %}
+                    {{ product.name }}
+                </td>
+                <td class="align-middle">{{ product.category.name }}</td>
+                <td class="align-middle">{{ product.price }} ريال </td>
+                <td class="align-middle">{{ product.stock }}</td>
+                <td class="align-middle">
+                    <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-info btn-action-info btn-sm">View</a>
+                    <a href="{% url 'inventory:product_edit' product.pk %}" class="btn btn-warning btn-action-warning btn-sm">Edit</a>
+                    <a href="{% url 'inventory:product_delete' product.pk %}" class="btn btn-danger btn-action-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- <div class="pagination d-flex justify-content-center align-items-center mt-5 gap-4">
+
+            {% if products.has_previous %}
+            <div class="d-flex gap-1">
+                <a href="?page=1&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">&laquo; First</a>
+                <a href="?page={{ products.previous_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">&laquo; Previous</a>
+            {% endif %}
+
+            <div class="current">
+                Page {{ products.number }} of {{ products.paginator.num_pages }}.
+            </div>
+
+            {% if products.has_next %}
+                <div class="d-flex gap-1"></div>
+                    <a href="?page={{ products.next_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">Next</a>
+                    <a href="?page={{ products.paginator.num_pages }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">Last</a>
+                </div>
+            {% endif %}
+    </div> -->
+
+    <nav class="d-flex justify-content-center align-items-center mt-5 gap-4 pagination-container">
+        <div class="pagination">
+            {% if products.has_previous %}
+                <a class="pagination-newer" href="?page={{ products.previous_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">Previous</a>
+            {% endif %}
+            <span class="pagination-inner">
+                {% for page_num in products.paginator.page_range %}
+                    {% if page_num == products.number %}
+                        <a class="pagination-active" href="?page={{ page_num }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">{{ page_num }}</a>
+                    {% else %}
+                        <a href="?page={{ page_num }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+            </span>
+            {% if products.has_next %}
+                <a class="pagination-older" href="?page={{ products.next_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}{% if category %}&category={{ category }}{% endif %}">Next</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <a href="{% url 'inventory:export_csv_products' %}" class="btn btn-outline-secondary p-2 mt-4 mb-5 btn-custom">Export All Products (CSV)</a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Supplier{% else %}Add Supplier{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">{% if form.instance.pk %}Edit Supplier{% else %}Add Supplier{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Supplier Name</label>
+            <input type="text" name="name" class="form-control" id="name" value="{{ form.name.value|default_if_none:'' }}">
+            {% if form.name.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.name.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="contact_email">Contact Email</label>
+            <input type="email" name="contact_email" class="form-control" id="contact_email" value="{{ form.contact_email.value|default_if_none:'' }}">
+            {% if form.contact_email.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.contact_email.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" name="phone_number" class="form-control" id="phone_number" value="{{ form.phone_number.value|default_if_none:'' }}">
+            {% if form.phone_number.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.phone_number.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" name="address" class="form-control" id="address" value="{{ form.address.value|default_if_none:'' }}">
+            {% if form.address.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.address.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="website">Website</label>
+            <input type="url" name="website" class="form-control" id="website" value="{{ form.website.value|default_if_none:'' }}">
+            {% if form.website.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.website.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="logo">Supplier Logo</label>
+                <input type="file" name="logo" class="form-control-file" id="logo">
+                {% if form.logo.errors %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>Error:</strong> {{ form.logo.errors|striptags }}
+                </div>
+                {% endif %}
+            </div>
+            {% if form.instance.pk and form.instance.logo %}
+            <div class="col-md-6">
+                <img src="{{ form.instance.logo.url }}" alt="{{ form.instance.name }}" class="img-fluid mt-2" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-action-success btn-rounded">{% if form.instance.pk %}Update{% else %}Add{% endif %} Supplier</button>
+        <a href="{% url 'inventory:supplier_list' %}" class="btn btn-action-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

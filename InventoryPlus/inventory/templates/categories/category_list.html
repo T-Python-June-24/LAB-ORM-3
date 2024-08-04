@@ -1,0 +1,110 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Category List{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col d-flex justify-content-between">
+            <h4 class="mt-2">All Categories ({{ total_items }})</h4>
+            <div>
+                <a href="{% url 'inventory:category_create' %}" class="btn btn-outline-success btn-custom mt-2 mr-2">Add Category</a>
+                <a href="{% url 'inventory:import_csv' model='category' %}" class="btn btn-custom mt-2">Import Categories (CSV)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <form method="get" id="pagination-form" class="form-inline">
+            <label for="paginate_by" class="mr-2 mb-0">Items per page:</label>
+            <select name="paginate_by" class="form-control form-control-sm mr-2" onchange="document.getElementById('pagination-form').submit();">
+                <option value="5" {% if paginate_by == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if paginate_by == 10 %}selected{% endif %}>10</option>
+                <option value="30" {% if paginate_by == 30 %}selected{% endif %}>30</option>
+                <option value="50" {% if paginate_by == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if paginate_by == 100 %}selected{% endif %}>100</option>
+            </select>
+        </form>
+
+        <form method="get" id="sorting-form" class="form-inline">
+            <select name="sort" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
+                <option value="product_count" {% if sort_by == 'product_count' %}selected{% endif %}>Number of Products</option>
+                <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Creation Time</option>
+                <option value="updated_at" {% if sort_by == 'updated_at' %}selected{% endif %}>Update Time</option>
+
+            </select>
+            <select name="order" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+                <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
+            </select>
+        </form>
+    </div>
+
+
+
+    <div class="d-flex flex-column">
+        {% for category in categories %}
+        <div class="card mt-3 mb-5">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-5">{{ category.name }}</h5>
+                    <div>
+                        <a href="{% url 'inventory:category_edit' category.pk %}" class="btn btn-warning btn-action-warning mb-5 ">Edit</a>
+                        <a href="{% url 'inventory:category_delete' category.pk %}" class="btn btn-danger btn-action-danger mb-5">Delete</a>
+                    </div>
+                </div>
+                {% if category.description %}
+                <p class="card-text">{{ category.description }}</p>
+                {% endif %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <p>{{ category.product_count }} product(s)</p>
+                    <a href="{% url 'inventory:category_detail' category.pk %}" class="btn btn-info btn-action-info mb-3">All Products</a>
+                </div>
+                
+                <div class="d-flex flex-row overflow-auto">
+                    {% for product in category.product_set.all %}
+                    <div class="card mr-2" style="min-width: 200px;">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 150px; object-fit: contain;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title">{{ product.name }}</h6>
+                            <p class="card-text">{{ product.price }} SAR</p>
+                            <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-outline btn-action w-100 p-1 btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+
+    <nav class="d-flex justify-content-center align-items-center gap-4 pagination-container">
+        <div class="pagination">
+            {% if categories.has_previous %}
+                <a class="pagination-newer" href="?page={{ categories.previous_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}">Previous</a>
+            {% endif %}
+            <span class="pagination-inner">
+                {% for page_num in categories.paginator.page_range %}
+                    {% if page_num == categories.number %}
+                        <a class="pagination-active" href="?page={{ page_num }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}">{{ page_num }}</a>
+                    {% else %}
+                        <a href="?page={{ page_num }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+            </span>
+            {% if categories.has_next %}
+                <a class="pagination-older" href="?page={{ categories.next_page_number }}&sort={{ sort_by }}&order={{ sort_order }}&paginate_by={{ paginate_by }}">Next</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <a href="{% url 'inventory:export_csv_categories' %}" class="btn btn-outline-secondary p-2 mt-4 mb-3 btn-custom">Export Categories (CSV)</a>
+
+</div>
+{% endblock %}

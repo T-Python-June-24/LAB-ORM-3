@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">Search Results for "{{ query }}"</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Products ({{ product_count }})</h3>
+            {% if products %}
+            <ul class="list-group">
+                {% for product in products %}
+                <li class="list-group-item">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-thumbnail mr-2" style="max-width: 50px; max-height: 50px;" alt="{{ product.name }}">
+                    {% endif %}
+                    <a href="{% url 'inventory:product_detail' product.pk %}">{{ product.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No products found.</p>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h3>Suppliers ({{ supplier_count }})</h3>
+            {% if suppliers %}
+            <ul class="list-group">
+                {% for supplier in suppliers %}
+                <li class="list-group-item">
+                    {% if supplier.logo %}
+                    <img src="{{ supplier.logo.url }}" class="img-thumbnail mr-2" style="max-width: 50px; max-height: 50px;" alt="{{ supplier.name }}">
+                    {% endif %}
+                    <a href="{% url 'inventory:supplier_detail' supplier.pk %}">{{ supplier.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No suppliers found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Expiry Date Alerts{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">Expiry Date Alerts</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in expiring_soon_products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.expiry_date|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+<form method="get" class="mb-4" id="filter-form">
+    <div class="form-row align-items-end">
+        <div class="col-5">
+            <label for="category">Category</label>
+            <select name="category" class="form-control" id="category" onchange="document.getElementById('filter-form').submit();">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <a href="{% url 'inventory:product_list' %}" class="btn btn-secondary btn-action mt-2 ml-2 float-right">Clear Filter</a>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <form method="get" id="pagination-form" class="form-inline">
+        <label for="paginate_by" class="mr-2 mb-0">Items per page:</label>
+        <select name="paginate_by" class="form-control form-control-sm mr-2" onchange="document.getElementById('pagination-form').submit();">
+            <option value="5" {% if paginate_by == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if paginate_by == 10 %}selected{% endif %}>10</option>
+            <option value="30" {% if paginate_by == 30 %}selected{% endif %}>30</option>
+            <option value="50" {% if paginate_by == 50 %}selected{% endif %}>50</option>
+            <option value="100" {% if paginate_by == 100 %}selected{% endif %}>100</option>
+        </select>
+    </form>
+
+    <form method="get" id="sorting-form" class="form-inline">
+        <input type="hidden" name="category" value="{{ request.GET.category }}">
+        <select name="sort" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
+            <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price</option>
+            <option value="stock" {% if sort_by == 'stock' %}selected{% endif %}>Stock</option>
+        </select>
+        <select name="order" class="form-control form-control-sm mr-2" onchange="document.getElementById('sorting-form').submit();">
+            <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
+            <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
+        </select>
+    </form>
+</div>

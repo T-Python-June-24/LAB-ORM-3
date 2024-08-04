@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Category{% else %}Add Category{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">{% if form.instance.pk %}Edit Category{% else %}Add Category{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Category Name</label>
+            <input type="text" name="name" class="form-control" id="name" value="{{ form.name.value|default_if_none:'' }}">
+            {% if form.name.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.name.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" class="form-control" id="description">{{ form.description.value|default_if_none:'' }}</textarea>
+            {% if form.description.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error:</strong> {{ form.description.errors|striptags }}
+            </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-action-success btn-rounded">{% if form.instance.pk %}Update{% else %}Add{% endif %} Category</button>
+        <a href="{% url 'inventory:category_list' %}" class="btn btn-action-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

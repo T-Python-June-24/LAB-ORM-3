@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ category.name }} Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <a href="{% url 'inventory:category_list' %}" class="btn btn-outline-secondary btn-rounded mb-3">Back to Category List</a>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ category.name }}</h2>
+            <p>{{ category.description }}</p>
+            <a href="{% url 'inventory:category_edit' category.pk %}" class="btn btn-action-warning">Edit</a>
+            <a href="{% url 'inventory:category_delete' category.pk %}" class="btn btn-action-danger">Delete</a>
+        </div>
+    </div>
+
+    <h3 class="my-4">Products in this Category</h3>
+    <div class="row">
+        {% for product in category.product_set.all %}
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'inventory:product_detail' product.pk %}" class="text-decoration-none text-dark">
+                <div class="card">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text"><strong>Price:</strong> {{ product.price }} SAR</p>
+                        <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
+                        <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-action-primary">View</a>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <p>No products available in this category.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

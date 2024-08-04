@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Inventory Report{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">Inventory Report</h2>
+
+    <!-- Category Filter -->
+    <form method="get" class="mb-4">
+        <div class="form-group">
+            <label for="category">Filter by Category</label>
+            <select name="category" class="form-control" id="category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <h3 class="my-4">Stock Levels Chart for {{ selected_category|yesno:"Selected Category,All Products" }}</h3>
+    <canvas id="stockCategoryChart"></canvas>
+
+    <h3 class="my-4">Low Stock Products</h3>
+    <canvas id="lowStockChart"></canvas>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('stockCategoryChart').getContext('2d');
+var stockCategoryChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for product in products %}'{{ product.name }}',{% endfor %}],
+        datasets: [{
+            label: 'Stock Levels',
+            data: [{% for product in products %}{{ product.stock }},{% endfor %}],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+var ctxLowStock = document.getElementById('lowStockChart').getContext('2d');
+var lowStockChart = new Chart(ctxLowStock, {
+    type: 'pie',
+    data: {
+        labels: [{% for product in low_stock_products %}'{{ product.name }}',{% endfor %}],
+        datasets: [{
+            data: [{% for product in low_stock_products %}{{ product.stock }},{% endfor %}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += context.raw || '';
+                        return label;
+                    }
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

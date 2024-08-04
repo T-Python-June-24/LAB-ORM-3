@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete the product "{{ product.name }}"?</p>
+    <p>This action cannot be undone.</p>
+    
+    <div class="d-flex">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-action-danger btn-rounded">Yes, Delete</button>
+        </form>
+        <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-action-secondary ml-3">Cancel</a>
+    </div>
+</div>
+{% endblock %}

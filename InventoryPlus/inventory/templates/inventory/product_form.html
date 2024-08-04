@@ -1,0 +1,106 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="my-4">{% if form.instance.pk %}Edit Product{% else %}Add Product{% endif %}</h2>
+    <form class="d-flex flex-column gap-3" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Product Name</label>
+            <input type="text" name="name" class="form-control" id="name" value="{{ form.name.value|default_if_none:'' }}">
+            {% if form.name.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{ form.name.errors|striptags }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" name="category" id="category">
+                <option value="">Select Category</option>
+                {% for category in form.category.field.queryset %}
+                <option value="{{ category.id }}" {% if category.id == form.category.value %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {% if form.category.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{ form.category.errors|striptags }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="suppliers">Suppliers</label>
+            <select multiple class="form-control" name="suppliers" id="suppliers">
+                {% for supplier in form.suppliers.field.queryset %}
+                <option value="{{ supplier.id }}" {% if supplier.id in form.suppliers.value %}selected{% endif %}>{{ supplier.name }}</option>
+                {% endfor %}
+            </select>
+            {% if form.suppliers.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{ form.suppliers.errors|striptags }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" name="price" class="form-control" id="price" step="0.01" value="{{ form.price.value|default_if_none:'' }}">
+            {% if form.price.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{ form.price.errors|striptags }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" name="stock" class="form-control" id="stock" value="{{ form.stock.value|default_if_none:'' }}">
+            {% if form.stock.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{ form.stock.errors|striptags }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" class="form-control" id="description">{{ form.description.value|default_if_none:'' }}</textarea>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="image">Product Image</label>
+                <input type="file" name="image" class="form-control-file" id="image">
+                {% if form.image.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error:</strong> {{ form.image.errors|striptags }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% if form.instance.pk and form.instance.image %}
+            <div class="col-md-6">
+                <img src="{{ form.instance.image.url }}" alt="{{ form.instance.name }}" class="img-fluid mt-2" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-action-success">{% if form.instance.pk %}Update{% else %}Add{% endif %} Product</button>
+        <a href="{% url 'inventory:product_list' %}" class="btn btn-action-secondary mt-3">Cancel</a>
+    </form>
+</div>
+{% endblock %}

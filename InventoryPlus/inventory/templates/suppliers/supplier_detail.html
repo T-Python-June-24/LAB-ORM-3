@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ supplier.name }} Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <a href="{% url 'inventory:supplier_list' %}" class="btn btn-outline-secondary btn-rounded mb-3">Back to Supplier List</a>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ supplier.name }}</h2>
+            <p><strong>Email:</strong> {{ supplier.contact_email }}</p>
+            <p><strong>Phone Number:</strong> {{ supplier.phone_number }}</p>
+            {% if supplier.website %}
+            <p><strong>Website:</strong> <a href="{{ supplier.website }}" target="_blank">{{ supplier.website }}</a></p>
+            {% endif %}
+            <p><strong>Address:</strong> {{ supplier.address }}</p>
+            <a href="{% url 'inventory:supplier_edit' supplier.pk %}" class="btn btn-action-warning">Edit</a>
+            <a href="{% url 'inventory:supplier_delete' supplier.pk %}" class="btn btn-action-danger">Delete</a>
+        </div>
+        <div class="col-md-4 text-right">
+            {% if supplier.logo %}
+            <img src="{{ supplier.logo.url }}" alt="{{ supplier.name }}" class="img-fluid" style="max-width: 150px;">
+            {% endif %}
+        </div>
+    </div>
+
+    <hr/>
+
+    <h3 class="my-4 mt-5">Products Supplied</h3>
+    <div class="row">
+        {% for product in supplier.products.all %}
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'inventory:product_detail' product.pk %}" class="text-decoration-none text-dark">
+                <div class="card">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text"><strong>{{ product.category.name }}</strong></p>
+                        <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-action-primary">View</a>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <p>No products available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

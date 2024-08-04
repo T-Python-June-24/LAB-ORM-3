@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inventory Plus{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300">
+
+</head>
+<body>
+
+
+    <header class="sticky-top bg-dark flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'main:home' %}"><h1 class="mb-0 logo text-white">Inventory Plus</h1></a>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+                            <a href="{% url 'main:home' %}" class="nav-link">Dashboard</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/inventory/products/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'inventory:product_list' %}">Products</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/inventory/categories/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'inventory:category_list' %}">Categories</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/inventory/suppliers/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'inventory:supplier_list' %}">Suppliers</a>
+                        </li>
+                        <li class="nav-item dropdown {% if request.path == '/analytics/inventory-report/' or request.path == '/analytics/supplier-report/' or request.path == '/analytics/low-stock-alerts/' %}active{% endif %}">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Analytics
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'analytics:inventory_report' %}">Inventory Report</a>
+                                <a class="dropdown-item" href="{% url 'analytics:supplier_report' %}">Supplier Report</a>
+                                <a class="dropdown-item" href="{% url 'analytics:low_stock_alerts' %}">Low Stocks</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <form class="form-inline" method="get" action="{% url 'inventory:search' %}">
+                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search for products or suppliers" aria-label="Search">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+
+    <main class="container my-5">
+        {% if messages %}
+  
+        {% for message in messages %}
+        <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+  
+      {% endif %}
+    </main>
+
+
+    
+
+    <div class="container my-5 pb-5">
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+
+
+    <footer class="bg-dark text-white fixed-bottom mt-5">
+        <div class="container">
+            <div class="row d-flex justify-content-between">
+                <div class="col">
+                    <tfoot><p class="text-muted">© 2024 | Inventory Plus</p></tfoot>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_scripts %}
+    {% endblock %}
+</body>
+</html>

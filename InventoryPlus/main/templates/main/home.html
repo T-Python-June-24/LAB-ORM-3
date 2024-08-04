@@ -1,0 +1,248 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="text-center my-5">
+    <h1 class="display-4">Welcome to Inventory Plus</h1>
+    <p class="lead">This is the Dashboard of the Inventory Plus management system</p>
+</section>
+
+<div class="container my-4">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="{% url 'inventory:product_list' %}" class="text-decoration-none">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Total Products</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_products }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'inventory:category_list' %}" class="text-decoration-none">
+                <div class="card text-white bg-secondary mb-3">
+                    <div class="card-header">Total Categories</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_categories }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'inventory:supplier_list' %}" class="text-decoration-none">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Total Suppliers</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ total_suppliers }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <h3><strong>Attention Needed</strong></h3>
+    <div class="card bg-warning text-dark">
+        <div class="card-body">
+            {% if low_stock_products %}
+                <ul class="list-group list-group-flush">
+                    {% for product in low_stock_products %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-warning">
+                        <a href="{% url 'inventory:product_detail' product.pk %}" class="text-dark">{{ product.name }}</a>
+                        <span class="badge badge-danger badge-pill">{{ product.stock }} left</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="card-text">All products are sufficiently stocked.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h3 class="mt-5 my-4">Stock Levels by Category</h3>
+    <div class="chart-container" style="position: relative; height:50vh; width:80vw;">
+        <canvas id="stockCategoryChart"></canvas>
+    </div>
+
+    <hr class="my-5"/>
+    <h3 class="mt-5">Category Details</h3>
+    <div class="chart-container" style="position: relative; height:50vh; width:80vw;">
+        <canvas id="categoryDetailsChart"></canvas>
+    </div>
+
+    <hr class="my-5"/>
+    <h3 class="mt-5">Low Stock Products</h3>
+    <div class="chart-container" style="position: relative; height:40vh; width:40vw;">
+        <canvas id="lowStockChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to create the stock category chart
+    function createStockCategoryChart(data) {
+        var ctxStockCategory = document.getElementById('stockCategoryChart').getContext('2d');
+        var stockCategoryChart = new Chart(ctxStockCategory, {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                onClick: function (event, elements) {
+                    if (elements.length > 0) {
+                        var index = elements[0].index;
+                        var categoryName = data.labels[index];
+                        fetchCategoryDetails(categoryName);
+                    }
+                }
+            }
+        });
+    }
+
+    // Function to fetch category details
+    function fetchCategoryDetails(categoryName) {
+        fetch(`/analytics/category-details/?category=${categoryName}`)
+            .then(response => response.json())
+            .then(data => {
+                updateCategoryDetailsChart(data);
+            });
+    }
+
+    // Function to update the category details chart
+    function updateCategoryDetailsChart(data) {
+        var ctxCategoryDetails = document.getElementById('categoryDetailsChart').getContext('2d');
+        new Chart(ctxCategoryDetails, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Stock Levels',
+                    data: data.data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Data for the initial stock category chart
+    var stockCategoryData = {
+        labels: [{% for category in stock_by_category %}'{{ category.category__name }}',{% endfor %}],
+        datasets: [{
+            label: 'Total Stock',
+            data: [{% for category in stock_by_category %}{{ category.total_stock }},{% endfor %}],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    // Create the initial stock category chart
+    createStockCategoryChart(stockCategoryData);
+
+    // Create the low stock chart
+    var ctxLowStock = document.getElementById('lowStockChart').getContext('2d');
+    var lowStockChart = new Chart(ctxLowStock, {
+        type: 'pie',
+        data: {
+            labels: [{% for product in low_stock_products %}'{{ product.name }}',{% endfor %}],
+            datasets: [{
+                data: [{% for product in low_stock_products %}{{ product.stock }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.raw || '';
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+
+    
+
+
+
+
+<!-- <hr/>
+{% include 'inventory/product_list.html' %} -->
