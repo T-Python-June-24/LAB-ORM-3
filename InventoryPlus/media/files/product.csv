@@ -1,0 +1,4 @@
+productName,productDescription,productPrice,expirationDate,productStock,unitPrice,category_id,supplier_ids
+"Product1","Description of Product1",12.50,2024-12-31,100,2.50,1,"1;2;3"
+"Product2","Description of Product2",15.00,2024-11-30,200,3.00,2,"2;4"
+"Product3","Description of Product3",20.00,2025-01-15,150,4.00,1,"1;3"

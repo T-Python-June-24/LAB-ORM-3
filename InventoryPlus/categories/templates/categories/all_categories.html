@@ -3,7 +3,7 @@
 {% block title %} All Categories {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="row-12 mt-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>All Categories</h1>
         <!-- Button trigger modal -->
@@ -11,136 +11,125 @@
             Add Category
         </button>
     </div>
-
-    <!-- Display messages -->
-    {% if messages %}
-        <div class="alert alert-dismissible fade show" role="alert">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endif %}
-
-    {% if categories %}
-        <div class="row row-cols-1 row-cols-md-2 g-4">
+    <table class="table table-responsive table-striped center-text-table">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Category Description</th>
+                <th>Created date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for category in categories %}
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="{{ category.categoryImage.url }}" class="img-fluid rounded-start" alt="{{ category.categoryName }}">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ category.categoryName }}</h5>
-                                    <p class="card-text">{{ category.categoryDescription }}</p>
-                                    <p class="card-text"><small class="text-muted">Created at: {{ category.createdAt }}</small></p>
-                                    <p class="card-text"><small class="text-muted">Number of Products: {{ category.product_count }}</small></p>
-                                    <a href="{% url 'categories:category_detail' category.id %}" class="btn btn-primary">Details</a>
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateCategoryModal" data-id="{{ category.id }}" data-name="{{ category.categoryName }}" data-description="{{ category.categoryDescription }}">
-                                        Update
-                                    </button>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" data-id="{{ category.id }}">
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            <tr>
+                <td>{{ category.categoryName }}</td>
+                <td>{{ category.categoryDescription }}</td>
+                <td>{{ category.createdAt }}</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateCategoryModal" data-id="{{ category.id }}"
+                            data-name="{{ category.categoryName }}"
+                            data-description="{{ category.categoryDescription }}">
+                            Update
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteCategoryModal" data-id="{{ category.id }}">
+                            Delete
+                        </button>
                     </div>
-                </div>
+                </td>
+            </tr>
             {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-warning" role="alert">
-            No categories found.
-        </div>
-    {% endif %}
-</div>
+        </tbody>
+    </table>
 
-<!-- Add Category Modal -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'categories:add_category' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="categoryDescription" class="form-label">Category Description</label>
-                        <textarea class="form-control" id="categoryDescription" name="categoryDescription"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="categoryImage" class="form-label">Category Image</label>
-                        <input type="file" class="form-control" id="categoryImage" name="categoryImage">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
+    <!-- </div> -->
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'categories:add_category' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label">Category Description</label>
+                            <textarea class="form-control" id="categoryDescription"
+                                name="categoryDescription"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Update Category Modal -->
-<div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateCategoryModalLabel">Update Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="updateCategoryName" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="updateCategoryName" name="categoryName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="updateCategoryDescription" class="form-label">Category Description</label>
-                        <textarea class="form-control" id="updateCategoryDescription" name="categoryDescription"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="updateCategoryImage" class="form-label">Category Image</label>
-                        <input type="file" class="form-control" id="updateCategoryImage" name="categoryImage">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
+    <!-- Update Category Modal -->
+    <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCategoryModalLabel">Update Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="updateCategoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="updateCategoryName" name="categoryName"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateCategoryDescription" class="form-label">Category Description</label>
+                            <textarea class="form-control" id="updateCategoryDescription"
+                                name="categoryDescription"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Delete Category Modal -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST">
-                    {% csrf_token %}
-                    <p>Are you sure you want to delete this category?</p>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </form>
+    <!-- Delete Category Modal -->
+    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <p>Are you sure you want to delete this category?</p>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- Handling Query Parameter Category In Modal Using Js -->
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var updateModal = document.getElementById('updateCategoryModal');

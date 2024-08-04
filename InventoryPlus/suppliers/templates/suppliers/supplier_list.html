@@ -4,20 +4,18 @@
 
 {% block content %}
 
-<div class="container mt-4">
-    <h1 class="mb-4">Suppliers</h1>
-    
-    <!-- Button to trigger modal -->
-    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
-        Add Supplier
-    </button>
-    
-    <!-- Supplier Table -->
-    <table class="table table-bordered">
+<div class="row-12  mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>all suppliers</h1>
+        <!-- Button trigger modal -->
+        <a href="{% url 'suppliers:supplier_add' %}" class="btn btn-success">
+            Add Supplier
+        </a>
+    </div>
+    <table class="table table-responsive table-striped center-text-table">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Address</th>
                 <th>Phone Number</th>
                 <th>Email</th>
                 <th>Products Supplied</th>
@@ -28,68 +26,55 @@
             {% for supplier in suppliers %}
             <tr>
                 <td>{{ supplier.supplierName }}</td>
-                <td>{{ supplier.supplierAddress }}</td>
                 <td>{{ supplier.supplierPhoneNumber }}</td>
                 <td>{{ supplier.supplierEmail }}</td>
                 <td>{{ supplier.product_set.count }}</td>
                 <td>
-                    <a href="{% url 'suppliers:supplier_detail' supplier.pk %}" class="btn btn-info btn-sm">View</a>
-                    <!-- Trigger edit modal -->
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSupplierModal{{ supplier.pk }}">Edit</button>
-                    <a href="{% url 'suppliers:supplier_delete' supplier.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    <div class="btn-group-vertical" role="group" aria-label="Basic outlined example">
+                        <a href="{% url 'suppliers:supplier_detail' supplier.id %}"
+                            class="btn btn-outline-primary">details</a>
+                        <a href="{% url 'suppliers:supplier_update' supplier.id %}"
+                            class="btn btn-outline-primary">update</a>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="{{supplier.id}}">delete</button>
+                    </div>
                 </td>
             </tr>
-
-            <!-- Modal for Editing Supplier -->
-            <div class="modal fade" id="editSupplierModal{{ supplier.pk }}" tabindex="-1" aria-labelledby="editSupplierModalLabel{{ supplier.pk }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editSupplierModalLabel{{ supplier.pk }}">Edit Supplier</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="post" enctype="multipart/form-data" action="{% url 'suppliers:supplier_update' supplier.pk %}">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <input type="hidden" name="edit_supplier" value="true">
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
             {% endfor %}
         </tbody>
     </table>
-</div>
 
-<!-- Modal for Adding Supplier -->
-<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addSupplierModalLabel">Add New Supplier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Delete supplier</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" action="{% url 'suppliers:supplier_add' %}">
+                <form method="POST">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="hidden" name="add_supplier" value="true">
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
+                    <p id="message">Are you sure you want to delete this supplier?</p>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </form>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
+
+
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        var deleteModal = document.getElementById('exampleModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var supplierID = button.getAttribute('data-id');
+            deleteModal.querySelector('form').action = '/suppliers/' + supplierID +'/delete/';
+        });
+    });
+</script>
 
 {% endblock %}
