@@ -1,0 +1,15 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Delete Product - BlueBox Inventory{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Delete Product</h1>
+    <p>Are you sure you want to delete "{{ product.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

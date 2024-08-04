@@ -1,0 +1,16 @@
+body {
+    background-color: #21273a;
+    color: white;
+}
+.bg-primary {
+    background-color: rgb(122, 122, 122) !important;
+    color: white;
+}
+
+.btn-primary{
+    background-color: rgb(122, 122, 122) !important;
+}
+
+.text-primary{
+    color: rgb(122, 122, 122) !important;
+}

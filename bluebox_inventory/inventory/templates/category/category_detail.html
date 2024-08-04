@@ -1,0 +1,10 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Category Detail - BlueBox Inventory{% endblock %}
+
+{% block content %}
+<h1>{{ object.name }}</h1>
+<p><strong>Description:</strong> {{ object.description }}</p>
+<a href="{% url 'category_edit' object.pk %}" >Edit</a> |
+<a href="{% url 'category_delete' object.pk %}" >Delete</a>
+{% endblock %}
