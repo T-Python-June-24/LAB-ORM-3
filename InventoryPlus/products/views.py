@@ -33,7 +33,7 @@ def all_products(request):
     suppliers = Supplier.objects.all()
     form = ProductForm()
     page_number = request.GET.get("page",1)
-    paginator = Paginator(products,1)
+    paginator = Paginator(products,4)
     product_page = paginator.get_page(page_number)
     return render(request, 'products/all_products.html', {
         'products': products,

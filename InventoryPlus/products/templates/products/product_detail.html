@@ -8,15 +8,28 @@
         <h1>product details</h1>
         <a href="{% url 'products:all_products' %}" class="btn btn-primary">Back to List</a>
     </div>
+
     <h1>{{ product.productName }}</h1>
-    <p>{{ product.productDescription }}</p>
-    <p>Price: {{ product.productPrice }}</p>
-    <p>Stock: {{ product.productStock }}</p>
-    <p>unit price: {{ product.unitPrice }}</p>
-    <p>total price of product Units: {{ product.calculateTotalPriceOfunits }}</p>
-    <p>Category: {{ product.productCategory.categoryName }}</p>
-    <p>Supplier: {% for supplier in product.productSupplier.all %} {{ supplier.supplierName }}{% if not forloop.last %},{% endif %} {% endfor %}</p>
-    <p>Expiration Date: {{ product.expirationDate }}</p>
-    <img src="{{ product.productImage.url }}" alt="{{ product.productName }}" class="img-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div class="d-flex ">
+
+            <p>{{ product.productDescription }}</p>
+            <p>Price: {{ product.productPrice }}</p>
+            <p>Stock: {{ product.productStock }}</p>
+            <p>unit price: {{ product.unitPrice }}</p>
+            <p>total price of product Units: {{ product.calculateTotalPriceOfunits }}</p>
+            <p>Category: {{ product.productCategory.categoryName }}</p>
+            <p>Supplier: {% for supplier in product.productSupplier.all %} {{ supplier.supplierName }}{% if not
+                forloop.last %},{% endif %} {% endfor %}</p>
+            <p>Expiration Date: {{ product.expirationDate }}</p>
+        </div>
+        <div class="d-flex">
+
+            <img src="{{ product.productImage.url }}" alt="{{ product.productName }}" height="300" width="300">
+        </div>
+    </div>
+
 </div>
 {% endblock %}
