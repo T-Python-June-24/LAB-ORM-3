@@ -8,12 +8,12 @@ from .forms import CSVUploadForm
 from django.contrib import messages
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
-
+from django.db.models import Q, F, Count, Avg, Sum, Min, Max
+from django.contrib import messages
 
 
 
 # Create your views here.
-
 
 def add_product_view(request:HttpRequest):
 
@@ -27,8 +27,10 @@ def add_product_view(request:HttpRequest):
         product_form = ProductForm(request.POST, request.FILES)
         if product_form.is_valid():
             product_form.save()
+            messages.success(request, "Product added successfully", extra_tags="alert-success")
             return redirect('main:home_view')
         else:
+            messages.error(request, "Can't add product successfully", extra_tags="alert-danger")
             print("not valid form", product_form.errors)
         # category = Category.objects.get(id=request.POST["category"])
         # new_product = Product(product_name=request.POST["product_name"], description=request.POST["description"], category=category, stock_level=request.POST["stock_level"], expiry_date=request.POST["expiry_date"], image=request.FILES["image"])
@@ -81,20 +83,15 @@ def all_products_view(request:HttpRequest, type, product_param):
 
 
 def product_detail_view(request:HttpRequest, product_id:int):
-
     product = Product.objects.get(pk=product_id)
-    
-
     return render(request, 'products/product_detail.html', {"product" : product})
 
 
 def update_product_view(request:HttpRequest, product_id:int):
-
     product = Product.objects.get(pk=product_id)
     product_suppliers = product.suppliers.all()
     suppliers = Supplier.objects.all()
     categories = Category.objects.all()
-    
 
     low_stock_products = Product.objects.filter(stock_level__lte=10)
     product.save()
@@ -109,14 +106,16 @@ def update_product_view(request:HttpRequest, product_id:int):
             fail_silently=False,
         )
 
-
     if request.method == "POST":
         #using ProductForm for updating
         product_form = ProductForm(instance=product, data=request.POST, files=request.FILES)
         if product_form.is_valid():
-             product_form.save()
+            product_form.save()
+            messages.success(request, "Product updated successfully", extra_tags='alert-success')
         else:
             print( product_form.errors)
+            messages.error(request, "Can't update product", extra_tags='alert-danger')
+
         ##basic update
         # product.name = request.POST["name"]
         # product.description = request.POST["description"]
@@ -130,10 +129,13 @@ def update_product_view(request:HttpRequest, product_id:int):
     return render(request, "products/update_product.html", {"product":product,"suppliers": suppliers ,"product_suppliers": product_suppliers, "categories": categories})
 
 def delete_product_view(request:HttpRequest, product_id:int):
-
-    product = Product.objects.get(pk=product_id)
-    product.delete()
-
+    try:
+        product = Product.objects.get(pk=product_id)
+        product.delete()
+        messages.success(request, "Deleted product successfully", extra_tags='alert-success')
+    except Exception as e:
+        print(e)
+        messages.error(request, "Can't delete product", extra_tags='alert-danger')
     return redirect("main:home_view")
 
 
@@ -158,24 +160,26 @@ def export_products_csv_view(request):
     # Create the HttpResponse object with CSV content type
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="products.csv"'
-
-    writer = csv.writer(response)
-    # Write the header row
-    writer.writerow(['product_name', 'description', 'expiry_date', 'stock_level', 'category', 'suppliers', 'image'])
-
-    # Write the product data
-    products = Product.objects.all()
-    for product in products:
-        writer.writerow([
-            product.product_name,
-            product.description,
-            product.expiry_date,
-            product.stock_level,
-            product.category.name if product.category else '',  # Ensure category field is correctly handled
-            ', '.join([supplier.supplier_name for supplier in product.suppliers.all()]),  
-            product.image.url if product.image else ''
-        ])
-
+    try:
+        writer = csv.writer(response)
+        # Write the header row
+        writer.writerow(['product_name', 'description', 'expiry_date', 'stock_level', 'category', 'suppliers', 'image'])
+        # Write the product data
+        products = Product.objects.all()
+        for product in products:
+            writer.writerow([
+                product.product_name,
+                product.description,
+                product.expiry_date,
+                product.stock_level,
+                product.category.name if product.category else '',  # Ensure category field is correctly handled
+                ', '.join([supplier.supplier_name for supplier in product.suppliers.all()]),  
+                product.image.url if product.image else ''
+            ])
+        messages.success(request, "Data is exported to CSV file successfully", extra_tags="alert-success")
+    except Exception as e:
+        print(e)
+        messages.error(request, "Can't export data to CSV file", extra_tags="alert-danger")
     return response
 
 

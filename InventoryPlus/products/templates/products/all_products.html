@@ -16,7 +16,7 @@
     {% if products.has_previous %}
         <div class="d-flex gap-1">
             <a href="?page=1">&laquo; first</a>
-            <a href=">page={{products.previous_page_number}}">&laquo; previous</a>
+            <a href="?page={{products.previous_page_number}}">&laquo; previous</a>
         </div>
     {% endif %}
     <div class="current">
@@ -25,7 +25,7 @@
     {% if products.has_next %}
         <div class="d-flex gap-1">
             <a href="?page={{ products.next_page_number }}">next &raquo;</a>
-            <a href="?page={{ products.paginator.num_pages }"> last &raquo;</a>
+            <a href="?page={{ products.paginator.num_pages }}"> last &raquo;</a>
         </div>
     {% endif %}
 
