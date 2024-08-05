@@ -7,19 +7,21 @@ import csv
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Category, Supplier
-from .forms import ProductForm, CategoryForm, SupplierForm
-
-
+from django.core.paginator import Paginator
+from django.db.models import Count
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Product views
+
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Product created successfully.')
             return redirect('product_list')
+        else:
+            messages.error(request, 'Error creating product.')
     else:
         form = ProductForm()
     return render(request, 'products/product_form.html', {'form': form})
@@ -30,16 +32,19 @@ def product_edit(request, pk):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Product updated successfully.')
             return redirect('product_detail', pk=product.pk)
+        else:
+            messages.error(request, 'Error updating product.')
     else:
         form = ProductForm(instance=product)
     return render(request, 'products/product_form.html', {'form': form})
-
 
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         product.delete()
+        messages.success(request, 'Product deleted successfully.')
         return redirect('product_list')
     return render(request, 'products/product_confirm_delete.html', {'product': product})
 
@@ -49,15 +54,37 @@ def product_detail(request, pk):
 
 def product_list(request):
     products = Product.objects.all()
-    return render(request, 'products/product_list.html', {'products': products})
+    paginator = Paginator(products, 5)  # Show 5 products per page
+
+    page_number = request.GET.get('page', 1)
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    total_products = Product.objects.count()
+    total_stock = Product.objects.aggregate(total_stock=Count('stock_quantity'))['total_stock']
+
+    context = {
+        'page_obj': page_obj,
+        'total_products': total_products,
+        'total_stock': total_stock,
+    }
+    return render(request, 'products/product_list.html', context)
 
 # Category views
+
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Category created successfully.')
             return redirect('category_list')
+        else:
+            messages.error(request, 'Error creating category.')
     else:
         form = CategoryForm()
     return render(request, 'category/category_form.html', {'form': form})
@@ -68,7 +95,10 @@ def category_edit(request, pk):
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Category updated successfully.')
             return redirect('category_list')
+        else:
+            messages.error(request, 'Error updating category.')
     else:
         form = CategoryForm(instance=category)
     return render(request, 'category/category_form.html', {'form': form})
@@ -77,12 +107,26 @@ def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
         category.delete()
+        messages.success(request, 'Category deleted successfully.')
         return redirect('category_list')
     return render(request, 'category/category_confirm_delete.html', {'category': category})
 
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'category/category_list.html', {'categories': categories})
+    paginator = Paginator(categories, 5)  # Show 5 categories per page
+
+    page_number = request.GET.get('page', 1)
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    context = {
+        'page_obj': page_obj,
+    }
+    return render(request, 'category/category_list.html', context)
 
 # Supplier views
 def supplier_create(request):
@@ -90,7 +134,10 @@ def supplier_create(request):
         form = SupplierForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Supplier created successfully!')
             return redirect('supplier_list')
+        else:
+            messages.error(request, 'Error creating supplier. Please correct the errors below.')
     else:
         form = SupplierForm()
     return render(request, 'suppliers/supplier_form.html', {'form': form})
@@ -101,7 +148,10 @@ def supplier_edit(request, pk):
         form = SupplierForm(request.POST, request.FILES, instance=supplier)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Supplier updated successfully!')
             return redirect('supplier_detail', pk=supplier.pk)
+        else:
+            messages.error(request, 'Error updating supplier. Please correct the errors below.')
     else:
         form = SupplierForm(instance=supplier)
     return render(request, 'suppliers/supplier_form.html', {'form': form})
@@ -110,8 +160,11 @@ def supplier_delete(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
         supplier.delete()
+        messages.success(request, 'Supplier deleted successfully!')
         return redirect('supplier_list')
     return render(request, 'suppliers/supplier_confirm_delete.html', {'supplier': supplier})
+
+
 
 def supplier_detail(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
@@ -120,54 +173,6 @@ def supplier_detail(request, pk):
 def supplier_list(request):
     suppliers = Supplier.objects.all()
     return render(request, 'suppliers/supplier_list.html', {'suppliers': suppliers})
-
-# Contact views
-def contact(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('contact')
-    else:
-        form = ContactForm()
-    return render(request, 'inventory/contact.html', {'form': form})
-
-def contact_messages(request):
-    messages = ContactMessage.objects.all()
-    return render(request, 'inventory/contact_messages.html', {'messages': messages})
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login as auth_login, logout as auth_logout
-
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            auth_login(request, user)  # Automatically log in the user after signup
-            messages.success(request, 'You have successfully logged in.')
-            return redirect('dashboard')  # Redirect to a dashboard or home page
-    else:
-        form = UserCreationForm()
-        messages.success(request, 'There is problem.')
-    return render(request, 'inventory/signup.html', {'form': form})
-
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            messages.success(request, 'You have successfully logged in.')
-            return redirect('dashboard')  # Redirect to a dashboard or home page
-    else:
-        form = AuthenticationForm()
-    return render(request, 'inventory/login.html', {'form': form})
-
-def logout(request):
-    auth_logout(request)
-    return redirect('login')  # Redirect to login page after logout
 #######################################
 def dashboard(request):
     total_products = Product.objects.count()

@@ -28,6 +28,16 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Display Django messages -->
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <nav class="navbar navbar-expand-lg navbar bg">
         <a class="navbar-brand center:" href="{% url 'dashboard' %}">
             <img src="{% static 'inventory/images/logo.png' %}" width="100" height="50" alt="Logo">
@@ -65,5 +75,6 @@
         });
     </script>
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

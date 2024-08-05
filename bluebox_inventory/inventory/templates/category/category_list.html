@@ -5,10 +5,22 @@
 
 {% block content %}
 <div class="container mt-4">
+    <!-- User Feedback Messages -->
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="d-flex justify-content-between align-items-center">
         <h1>Categories</h1>
         <a href="{% url 'category_create' %}" class="btn btn-primary">Add New Category</a>
     </div>
+
     <table class="table table-striped mt-3">
         <thead>
             <tr>
@@ -17,7 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for category in categories %}
+            {% for category in page_obj %}
             <tr>
                 <td>{{ category.name }}</td>
                 <td>
@@ -28,5 +40,26 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}# {% endif %}" {% if not page_obj.has_previous %}tabindex="-1" aria-disabled="true"{% endif %}>Previous</a>
+            </li>
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}# {% endif %}" {% if not page_obj.has_next %}tabindex="-1" aria-disabled="true"{% endif %}>Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 {% endblock %}
