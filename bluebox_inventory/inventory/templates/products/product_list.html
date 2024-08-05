@@ -1,0 +1,80 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}Products - BlueBox Inventory{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- User Feedback Messages -->
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Products</h1>
+        <span>Total Products: {{ total_products }}</span>
+        <span>Total Stock: {{ total_stock }}</span>
+        <a href="{% url 'product_create' %}" class="btn btn-primary">Add New Product</a>
+    </div>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Supplier</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in page_obj %}
+            <tr>
+                <td>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50" height="50" class="img-thumbnail mr-2">
+                    {% endif %}
+                    <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+                </td>
+                <td>{{ product.category.name }}</td>
+                <td>{{ product.supplier.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stock_quantity }}</td>
+                <td>
+                    <a href="{% url 'product_edit' product.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}# {% endif %}" {% if not page_obj.has_previous %}tabindex="-1" aria-disabled="true"{% endif %}>Previous</a>
+            </li>
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}# {% endif %}" {% if not page_obj.has_next %}tabindex="-1" aria-disabled="true"{% endif %}>Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

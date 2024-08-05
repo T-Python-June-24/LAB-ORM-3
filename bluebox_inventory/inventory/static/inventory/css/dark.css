@@ -1,0 +1,29 @@
+body {
+    background-color: #21273a;
+    color: white;
+}
+.bg-primary {
+    background-color: rgb(122, 122, 122) !important;
+    color: white;
+}
+
+.btn-primary{
+    background-color: rgb(122, 122, 122) !important;
+}
+
+.text-primary{
+    color: rgb(122, 122, 122) !important;
+}
+
+.table {
+    background-color: #343a40; 
+    color: white; 
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #495057;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #343a40;
+}
