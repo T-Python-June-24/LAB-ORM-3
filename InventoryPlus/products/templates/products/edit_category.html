@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block content %}
+<main class="px-32 items-center">
+    <h1 class="pb-4 text-3xl font-medium">Edit Category</h1>
+    <form method="POST" class="w-1/2 space-y-4">
+        {% csrf_token %}
+        <div>
+            <label for="name" class="block text-xl font-medium text-gray-700">Name</label>
+            <input type="text" name="name" id="name" value="{{ category.name }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-customPurple focus:ring-customPurple sm:text-sm">
+        </div>
+        <div>
+            <label for="description" class="block text-xl font-medium text-gray-700">Description</label>
+            <textarea name="description" id="description" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-customPurple focus:ring-customPurple sm:text-sm">{{ category.description }}</textarea>
+        </div>
+        <div>
+            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-customPurple hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save Changes</button>
+        </div>
+    </form>
+</main>
+{% endblock %}

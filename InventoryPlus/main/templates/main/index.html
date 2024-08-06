@@ -1,0 +1,61 @@
+{% extends "main/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<main class="px-32">
+  <div class="container">
+    <h1 class="text-4xl font-medium py-7 ">Dashboard</h1>
+    <div class="flex flex-row justify-center gap-48 px-10 pt-4 pb-10">
+      <!-- Product Overview Section -->
+      <div class="border p-8 rounded-md shadow-sm">
+        <h2 class="text-2xl font-semibold pb-5">Product Overview</h2>
+        <div class="flex flex-row items-center gap-6">
+          <div>
+            <span class="material-symbols-outlined text-6xl text-customPurple">inventory_2</span>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-gray-600">Total Products:</h3>
+              <p class="text-black text-xl font-medium">{{ total_products }}</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-gray-600">Low Stock Items:</h3>
+              <p class="text-black text-xl font-medium">{{ low_stock_items }}</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-gray-600">Expired Items:</h3>
+              <p class="text-black text-xl font-medium">{{ expired_items }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Supplier Overview Section -->
+      <div class="border p-8 rounded-md shadow-sm">
+        <h2 class="text-2xl font-semibold pb-5">Supplier Overview</h2>
+        <div class="flex flex-row items-center gap-6">
+          <div>
+            <span class="material-symbols-outlined text-6xl text-customPurple">inventory</span>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-gray-600">Total Suppliers:</h3>
+              <p class="text-black text-xl font-medium">{{ total_suppliers }}</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <h3 class="text-gray-600">Products Supplied:</h3>
+              <p class="text-black text-xl font-medium">{{ products_supplied }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Plotly Static Diagram -->
+    <div id="stock-chart">{{ plot_div|safe }}</div>
+</div>
+
+</main>
+{% endblock %}

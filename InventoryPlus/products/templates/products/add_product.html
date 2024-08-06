@@ -1,0 +1,68 @@
+{% extends "main/base.html" %}
+
+{% block title %}Add Product Page{% endblock %}
+
+{% block content %}
+<main class="px-32 mb-6">
+  <!-- Displaying messages -->
+  {% if messages %}
+  <div class="my-4">
+    {% for message in messages %}
+      <div class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} p-4 mb-4 rounded">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <h1 class="text-2xl font-bold mb-8">Add New Product</h1>
+  <form action="{% url 'products:add_product' %}" method="post" enctype="multipart/form-data" class="w-1/2">
+      {% csrf_token %}
+      <div class="mb-4">
+          <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Product Name:</label>
+          <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+      </div>
+      <div class="mb-4">
+          <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category:</label>
+          <select id="category" name="category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+              {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div class="mb-4">
+          <label for="supplier" class="block text-gray-700 text-sm font-bold mb-2">Supplier:</label>
+          <div class="flex flex-wrap">
+              {% for supplier in suppliers %}
+                  <div class="mr-4 mb-2">
+                      <input type="checkbox" id="supplier_{{ supplier.id }}" name="supplier" value="{{ supplier.id }}" class="mr-2">
+                      <label for="supplier_{{ supplier.id }}">{{ supplier.name }}</label>
+                  </div>
+              {% endfor %}
+          </div>
+      </div>
+      <div class="mb-4">
+        <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Product Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+      </div>      
+      <div class="mb-4">
+          <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+          <textarea id="description" name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+      </div>
+      <div class="mb-4">
+        <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Price:</label>
+        <input type="number" id="price" name="price" step="0.01" min="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+      </div>
+      <div class="mb-4">
+        <label for="stock_quantity" class="block text-gray-700 text-sm font-bold mb-2">Stock Quantity:</label>
+        <input type="number" id="stock_quantity" name="stock_quantity" min="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+      </div>      
+      <div class="mb-4">
+          <label for="expiry_date" class="block text-gray-700 text-sm font-bold mb-2">Expiry Date:</label>
+          <input type="date" id="expiry_date" name="expiry_date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="flex items-center justify-between mb-32">
+          <button type="submit" class="bg-customPurple hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Product</button>
+      </div>
+  </form>
+</main>
+{% endblock %}
