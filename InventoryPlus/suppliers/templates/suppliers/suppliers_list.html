@@ -1,0 +1,56 @@
+{% extends "main/base.html" %}
+
+{% block title %}Suppliers List{% endblock %}
+
+{% block content %}
+<main class="px-32 items-center">
+  {% if messages %}
+  <div class="my-4">
+    {% for message in messages %}
+      <div class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} p-4 mb-4 rounded">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <h1 class="pb-8 text-3xl font-medium">Suppliers</h1>
+  <div class="w-1/2">
+      <a href="{% url 'suppliers:add_supplier' %}" class="inline-flex justify-center py-2 px-8 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-charcoal hover:bg-customPurple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Supplier</a>
+  </div>
+  <div class="mt-8">
+      <table class="min-w-full bg-white border border-gray-200 text-center">
+          <thead>
+              <tr class="bg-gray-100 border-b border-gray-200">
+                  <th class="py-2 px-4 border-r border-gray-200">Supplier Name</th>
+                  <th class="py-2 px-4 border-r border-gray-200">Phone Number</th>
+                  <th class="py-2 px-4 border-r border-gray-200">Email</th>
+                  <th class="py-2 px-4 border-r border-gray-200">Edit</th>
+                  <th class="py-2 px-4">Delete</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for supplier in suppliers %}
+              <tr class="border-b border-gray-200">
+                  <td class="py-2 px-4 border-r border-gray-200">
+                      <a href="{% url 'suppliers:supplier_detail' supplier.id %}" class="text-indigo-600 hover:text-indigo-900">
+                          {{ supplier.name }}
+                      </a>
+                  </td>
+                  <td class="py-2 px-4 border-r border-gray-200">{{ supplier.phone_number }}</td>
+                  <td class="py-2 px-4 border-r border-gray-200">{{ supplier.email }}</td>
+                  <td class="py-2 px-4 border-r border-gray-200">
+                      <a href="{% url 'suppliers:edit_supplier' supplier.id %}" class="bg-customPurple my-2 px-4 rounded-md py-2 text-white hover:bg-indigo-900">Edit</a>
+                  </td>
+                  <td class="py-2 px-4">
+                      <form action="{% url 'suppliers:delete_supplier' supplier.id %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit" class="bg-customPurple my-2 px-4 rounded-md py-2 text-white hover:bg-indigo-900">Delete</button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+</main>
+{% endblock %}

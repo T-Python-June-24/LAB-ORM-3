@@ -1,0 +1,16 @@
+{% extends "main/base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<main class="px-32 ">
+  <h1 class="text-3xl font-medium mb-4">Inventory and Supplier Reports</h1>
+
+  <h2 class="text-xl text-gray-700">Inventory Report</h2>
+  <div class="w-3/4">{{ inventory_plot_div|safe }}</div>
+
+  <h2 class="text-3xl font-medium mb-4">Supplier Report</h2>
+  <div class="w-3/4">{{ supplier_plot_div|safe }}</div>
+
+</main>
+{% endblock %}

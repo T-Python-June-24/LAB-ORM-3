@@ -1,0 +1,44 @@
+<!-- {% extends "main/base.html" %}
+
+{% block title %}Stock Management{% endblock %}
+
+{% block content %}
+<main class="py-8 px-8">
+    <h1 class="text-2xl font-bold mb-6">Stock Management</h1>
+    
+    <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b">Product Name</th>
+                <th class="py-2 px-4 border-b">Stock Level</th>
+                <th class="py-2 px-4 border-b">Status</th>
+                <th class="py-2 px-4 border-b">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td class="py-2 px-4 border-b">{{ product.name }}</td>
+                    <td class="py-2 px-4 border-b">
+                        <div class="relative w-full h-4 bg-gray-200">
+                            <div class="absolute top-0 left-0 h-full bg-green-500" style="width: {{ product.stock_level_percentage }}%;"></div>
+                        </div>
+                    </td>
+                    <td class="py-2 px-4 border-b">
+                        {% if product.stock_quantity > 10 %}
+                            In Stock
+                        {% elif product.stock_quantity > 0 %}
+                            Low Stock
+                        {% else %}
+                            Out of Stock
+                        {% endif %}
+                    </td>
+                    <td class="py-2 px-4 border-b">
+                        <a href="{% url 'products:edit_product_view' product.id %}" class="text-indigo-600 hover:text-indigo-900">Update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %} -->

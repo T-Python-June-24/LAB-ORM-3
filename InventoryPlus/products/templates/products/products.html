@@ -1,0 +1,68 @@
+{% extends "main/base.html" %}
+
+{% block title %}Products Page{% endblock %}
+
+{% block content %}
+<main class="py-8 items-center px-32">
+  <!-- Displaying messages -->
+  {% if messages %}
+  <div class="my-4">
+    {% for message in messages %}
+      <div class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} p-4 mb-4 rounded">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <div class="flex flex-row justify-between items-center mb-10">
+    <h1 class="text-3xl">Products</h1>
+    <div class="flex items-center justify-center space-x-2">
+      <a href="{% url 'products:add_product' %}" class="flex items-center space-x-1 hover:text-blue-700 text-customPurple border-b-4 border-customPurple pb-1">
+          <span class="material-symbols-outlined">add</span>
+          <span >Add Product</span>
+      </a>
+    </div>
+  </div>
+  <div class="mb-8 ">
+    <form method="get" action="{% url 'products:product_search_view' %}" class="flex flex-row items-center justify-center">
+      <input type="text" name="q" placeholder="Search products" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ request.GET.q|default:'' }}">
+      <button type="submit" class="bg-customPurple hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">Search</button>
+    </form>
+  </div>
+  <div class="flex flex-row flex-wrap gap-4 my-10 mx-0">
+    {% for product in products %}
+    <a class="mb-2" href="{% url 'products:product_detail_view' product.id %}">
+      <div class="flex flex-col justify-center pt-4 pb-8 mb-8 px-8 border w-[360px]  rounded-md bg-white shadow-md">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-[350px] h-[250px] border-0 rounded-md object-cover">
+        <h2 class="py-2 text-lg font-bold">{{ product.name }}</h2>
+        <!-- <p class="pb-4 text-lg font-semibold">${{ product.price }}</p> -->
+        <p class="pb-4">Stock: {{ product.stock_quantity }}</p>
+        <a href="{% url 'products:edit_product_view' product.id %}" class="my-2 border-2 border-customPurple py-2 text-customPurple  text-center rounded-md">Edit</a>
+        <form action="{% url 'products:delete_product_view' product.id %}" method="post" class="my-2">
+            {% csrf_token %}
+            <button type="submit" class="w-full border py-2 bg-customPurple text-white rounded-md">Delete</button>
+        </form>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="flex justify-center">
+    <nav class="flex items-center gap-2">
+      {% if products.has_previous %}
+        <a href="?page=1" class="px-3 py-1 text-customPurple underline font-semibold hover:text-blue-700">First</a>
+        <a href="?page={{ products.previous_page_number }}" class="px-3 py-1 text-customPurple underline font-semibold hover:text-blue-700">Previous</a>
+      {% endif %}
+
+      <span class="px-3 py-1 font-semibold">{{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+      {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}" class="px-3 py-1 text-customPurple underline font-semibold hover:text-blue-700">Next</a>
+        <a href="?page={{ products.paginator.num_pages }}" class="px-3 py-1 text-customPurple underline font-semibold hover:text-blue-700">Last</a>
+      {% endif %}
+    </nav>
+  </div>
+
+</main>
+{% endblock %}

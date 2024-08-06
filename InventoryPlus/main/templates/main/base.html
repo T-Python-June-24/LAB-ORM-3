@@ -1,0 +1,66 @@
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>{% block title %} {% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+      .nav-link {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #6D31ED; 
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+  </style>
+  {% tailwind_css %}
+</head>
+<body>
+  <nav class="flex flex-row justify-between py-8 px-32">
+    <div class="flex flex-row gap-12 items-center">
+        <a href="{% url 'main:home_view' %}" class="text-xl text-customPurple font-medium">
+            InventoryPlus
+        </a>
+        <a href="{% url 'main:home_view' %}" class="pl-3 nav-link">
+            Dashboard
+        </a>
+        <a href="{% url 'products:products_view' %}" class="nav-link">
+            Products
+        </a>
+        <a href="{% url 'suppliers:suppliers_list' %}" class="nav-link">
+            Suppliers
+        </a>
+        <a href="{% url 'products:categories_view' %}" class="nav-link">
+            Category
+        </a>
+        <a href="{% url 'reports:inventory_report' %}" class="nav-link">
+            Reports
+        </a>
+    </div>
+  </nav>
+
+
+  {% block content %}
+
+  {% endblock %}
+</body>
+</html>

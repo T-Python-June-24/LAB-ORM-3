@@ -1,0 +1,40 @@
+{% extends "main/base.html" %}
+
+{% block title %}Supplier Detail{% endblock %}
+
+{% block content %}
+<main class="px-32 items-center">
+  {% if messages %}
+  <div class="my-4">
+    {% for message in messages %}
+      <div class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} p-4 mb-4 rounded">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <h1 class="pb-8 text-3xl font-medium">{{ supplier.name }}</h1>
+  <div class="w-1/2 flex flex-row gap-20">
+    <div>
+      <p class="py-4"><strong class="text-gray-700">Email:</strong> {{ supplier.email }}</p>
+      <p class="py-4"><strong class="text-gray-700">Website:</strong> <a href="{{ supplier.website }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">{{ supplier.website }}</a></p>
+      <p class="py-4"><strong class="text-gray-700">Phone Number:</strong> {{ supplier.phone_number }}</p>
+      <p class="py-4"><strong class="text-gray-700">Product Count:</strong> {{ supplier.product_count }}</p>
+      <p class="py-4"><strong class="text-gray-700">Average Price:</strong> {{ supplier.average_price|floatformat:2 }}</p>
+    </div>
+
+      {% if supplier.logo %}
+          <div class="mt-4">
+              <img src="{{ supplier.logo.url }}" alt="{{ supplier.name }} Logo" class="w-32 h-32">
+          </div>
+      {% endif %}
+  </div>
+  <div class="mt-8">
+      <a href="{% url 'suppliers:edit_supplier' supplier.id %}" class="inline-flex justify-center py-2 px-8 border shadow-sm text-sm font-medium rounded-md text-customPurple border-customPurple hover:bg-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Edit Supplier</a>
+      <form action="{% url 'suppliers:delete_supplier' supplier.id %}" method="post" class="inline ml-4">
+          {% csrf_token %}
+          <button type="submit" class="inline-flex justify-center py-2 px-8 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-customPurple hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Delete Supplier</button>
+      </form>
+  </div>
+</main>
+{% endblock %}
